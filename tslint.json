@@ -13,7 +13,11 @@
     "deprecation": {
       "severity": "warning"
     },
-    "component-class-suffix": [true, "Page", "Component"],
+    "component-class-suffix": [
+      true,
+      "Page",
+      "Component"
+    ],
     "contextual-lifecycle": true,
     "directive-class-suffix": true,
     "directive-selector": [
@@ -58,6 +62,7 @@
     "no-console": [
       true,
       "debug",
+      "log",
       "info",
       "time",
       "timeEnd",
@@ -145,5 +150,6 @@
   },
   "rulesDirectory": [
     "codelyzer"
-  ]
+  ],
+  "prefer-on-push-component-change-detection": true
 }
