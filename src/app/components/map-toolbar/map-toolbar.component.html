@@ -3,12 +3,12 @@
 
     <ion-buttons class="app-flex-column">
 
-      <ion-button>
-        <ion-icon slot="icon-only" name="add"></ion-icon>
+      <ion-button (click)="home.onToggleGeolocation()">
+        <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
       </ion-button>
 
       <ion-button>
-        <ion-icon slot="icon-only" name="add"></ion-icon>
+        <ion-icon slot="icon-only" size="small" name="add"></ion-icon>
       </ion-button>
 
     </ion-buttons>

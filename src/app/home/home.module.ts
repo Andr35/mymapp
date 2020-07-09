@@ -3,6 +3,7 @@ import {NgModule} from '@angular/core';
 import {IonicModule} from '@ionic/angular';
 import {FileManagerComponent} from '../components/file-manager/file-manager.component';
 import {MapToolbarComponent} from '../components/map-toolbar/map-toolbar.component';
+import {SharedModule} from '../shared/shared.module';
 import {HomePage} from './home.page';
 import {HomePageRoutingModule} from './home.routing';
 
@@ -13,6 +14,8 @@ import {HomePageRoutingModule} from './home.routing';
     IonicModule,
     CommonModule,
     HomePageRoutingModule,
+
+    SharedModule,
   ],
   declarations: [
     HomePage,

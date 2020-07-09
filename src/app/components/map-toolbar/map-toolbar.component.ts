@@ -1,4 +1,5 @@
-import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, Component} from '@angular/core';
+import {HomePage} from '@app/home/home.page';
 
 @Component({
   selector: 'app-map-toolbar',
@@ -6,10 +7,8 @@ import {ChangeDetectionStrategy, Component, OnInit} from '@angular/core';
   styleUrls: ['./map-toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapToolbarComponent implements OnInit {
+export class MapToolbarComponent {
 
-  constructor() {}
-
-  ngOnInit() {}
+  constructor(public home: HomePage) {}
 
 }

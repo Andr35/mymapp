@@ -13,7 +13,8 @@ export class HomePage implements AfterViewInit {
   @ViewChild('mapContainer')
   mapContainer: ElementRef<HTMLDivElement>;
 
-  map: Map;
+  private map: Map;
+  private geolocateCtrl: GeolocateControl;
 
   constructor() {}
 
@@ -33,14 +34,20 @@ export class HomePage implements AfterViewInit {
       this.map.resize();
     });
 
-    this.map.addControl(new GeolocateControl({
+
+    this.geolocateCtrl = new GeolocateControl({
       positionOptions: {
         enableHighAccuracy: true
       },
       trackUserLocation: false,
       showAccuracyCircle: true,
-    }));
+    });
 
+    this.map.addControl(this.geolocateCtrl);
+  }
+
+  onToggleGeolocation() {
+    this.geolocateCtrl.trigger();
   }
 
 }

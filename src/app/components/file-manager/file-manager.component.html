@@ -1,9 +1,39 @@
 <ion-card>
-  <ion-card-header>
-    <ion-card-subtitle>Awesome Subtitle</ion-card-subtitle>
-    <ion-card-title>Awesome Title</ion-card-title>
-  </ion-card-header>
-  <ion-card-content>
-    Awesome content
+  <ion-card-content class="toolbar">
+
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+
+        <ion-col size="auto" class="app-flex ion-align-items-center ion-justify-content-center ion-margin-end">
+          <ion-spinner name="crescent" color="secondary" [ngClass]="{'app-hide': !(loading$ | async)}"></ion-spinner>
+        </ion-col>
+
+        <ion-col *ngIf="!(file$ | async)" class="app-flex ion-align-items-center ion-justify-content-center">
+
+          <input #fileInput type="file" class="file-input" accept="application/json"
+                 (change)="onOpenFile($event.srcElement.files)">
+
+          <ion-button (click)="onOpenFilePrompt()">
+            <span>Open</span>
+            <ion-icon slot="end" [src]="'folder-open-outline' | getIcon"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+        <ion-col *ngIf="file$ | async; let file" class="app-flex ion-align-items-center ion-justify-content-center">
+
+          <ion-text class="ion-margin-end">
+            <span>{{ file.name }}</span>
+          </ion-text>
+
+          <!-- (click)="onSave()" -->
+          <ion-button>
+            <span>Save</span>
+            <ion-icon slot="end" [src]="'content-save-outline' | getIcon"></ion-icon>
+          </ion-button>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+
   </ion-card-content>
 </ion-card>
