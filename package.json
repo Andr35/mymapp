@@ -30,6 +30,7 @@
     "@ngxs/devtools-plugin": "^3.6.2",
     "@ngxs/store": "^3.6.2",
     "mapbox-gl": "^1.11.1",
+    "mapbox-gl-controls": "^1.6.4",
     "rxjs": "^6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

@@ -3,12 +3,16 @@ import {Injectable} from '@angular/core';
 // tslint:disable-next-line:max-line-length
 import {CommonActions} from '@app/store/common/common.actions';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
+import {MapStyle, MAP_DEFAULT_STYLES} from '../../models/map-style';
+
+// const {Filesystem} = Plugins;
 
 export interface CommonStateModel {
 
   file: File | null;
+  geojsonData: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry> | null;
 
-  sample: boolean;
+  mapStyles: MapStyle[];
 
   error: Error | null;
 }
@@ -18,7 +22,9 @@ export interface CommonStateModel {
   name: 'common',
   defaults: {
     file: null,
-    sample: false,
+    geojsonData: null,
+    mapStyles: MAP_DEFAULT_STYLES,
+
     error: null
   }
 })
@@ -31,8 +37,12 @@ export class CommonState {
     return state.file;
   }
 
-  @Selector() static sample(state: CommonStateModel) {
-    return state.sample;
+  @Selector() static geojsonData(state: CommonStateModel) {
+    return state.geojsonData;
+  }
+
+  @Selector() static mapStyles(state: CommonStateModel) {
+    return state.mapStyles;
   }
 
   @Selector() static error(state: CommonStateModel) {
@@ -43,9 +53,18 @@ export class CommonState {
   // Actions //////////////////////////////////////////////////////////////////////////////////////
 
   @Action(CommonActions.OpenFile)
-  openFile(ctx: StateContext<CommonStateModel>, {payload: {file}}: CommonActions.OpenFile) {
-    ctx.patchState({file});
-    // TODO ...
+  async openFile(ctx: StateContext<CommonStateModel>, {payload: {file}}: CommonActions.OpenFile) {
+
+    // TODO handle errors
+
+    // Read file
+    const contentString = await this.readFile(file);
+
+    if (contentString) {
+      const geojsonData = JSON.parse(contentString);
+      ctx.patchState({file, geojsonData});
+    }
+
   }
 
   @Action(CommonActions.SaveFile)
@@ -53,16 +72,28 @@ export class CommonState {
     // TODO impl
   }
 
-  @Action(CommonActions.Sample)
-  sample(ctx: StateContext<CommonStateModel>, {payload: {sample}}: CommonActions.Sample) {
-    ctx.patchState({sample});
-  }
-
 
   @Action(CommonActions.AppError)
   appError(ctx: StateContext<CommonStateModel>, {payload}: CommonActions.AppError) {
     ctx.patchState({
       error: payload
+    });
+  }
+
+
+  readFile(file: File): Promise<string | null | undefined> {
+    return new Promise<string | null | undefined>((resolve, reject) => {
+
+      // Check if the file is an image.
+      if (file.type !== 'application/json') {
+        return reject({msg: `File is not a json (type: ${file.type})`, err: null});
+      }
+
+      const reader = new FileReader();
+      reader.addEventListener('load', (event) => resolve(event?.target?.result as string));
+      reader.addEventListener('error', (event) => reject({msg: `Fail to read file`, err: event}));
+
+      reader.readAsText(file);
     });
   }
 

@@ -4,7 +4,9 @@
   "description": "An Amazing Capacitor App",
   "main": "index.js",
   "scripts": {
-    "electron:start": "electron ./"
+    "electron:start": "electron ./",
+    "electron:start:dev": "electron http://localhost:4200",
+    "electron:start:prod": "electron ./"
   },
   "dependencies": {
     "@capacitor/electron": "^2.2.1",

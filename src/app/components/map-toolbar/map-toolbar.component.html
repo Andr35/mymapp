@@ -7,6 +7,19 @@
         <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
       </ion-button>
 
+      <ion-button (click)="home.onToggleRuler()" [color]="home.rulerCtrl?.isMeasuring ? 'secondary' : 'primary'">
+        <ion-icon slot="icon-only" size="small" [src]="'ruler' | getIcon"></ion-icon>
+      </ion-button>
+
+      <ion-button (click)="toggleMapStylesPopover($event)">
+        <ion-icon slot="icon-only" size="small" [src]="'map-legend' | getIcon"></ion-icon>
+      </ion-button>
+
+      <ng-template #some>
+        <p>Ciao</p>
+      </ng-template>
+
+
       <ion-button>
         <ion-icon slot="icon-only" size="small" name="add"></ion-icon>
       </ion-button>
