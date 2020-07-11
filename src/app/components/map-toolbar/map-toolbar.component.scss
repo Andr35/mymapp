@@ -2,3 +2,11 @@
 .toolbar {
   padding: 6px;
 }
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background: #eee;
+  // background: var(--ion-color-medium);
+  margin: 4px 0;
+}

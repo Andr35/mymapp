@@ -15,7 +15,18 @@ import {Observable, Subscription} from 'rxjs';
 })
 export class HomePage implements AfterViewInit, OnDestroy {
 
+  constructor(
+    private store: Store,
+  ) {}
+
   private readonly GEOJSON_SOURCE = 'geojsonSource';
+  private readonly DEFAULT_GEOJSON_DATA: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {type: 'FeatureCollection', features: []};
+
+  private readonly MAP_MARKERS_DATA: {name: string; url: string}[] = [
+    {name: 'marker-journey', url: `assets/markers/marker-journey.svg`},
+    {name: 'marker-mountain', url: `assets/markers/marker-mountain.svg`},
+    {name: 'marker-bike', url: `assets/markers/marker-bike.svg`},
+  ];
 
   @Select(CommonState.geojsonData)
   geojsonData$: Observable<GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry> | null>;
@@ -31,11 +42,22 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   private readonly subscr = new Subscription();
 
-  constructor(private store: Store) {}
+  private readonly styleDataCallback = () => {
+
+    // Once called -> turn off
+    this.map.off('styledata', this.styleDataCallback);
+
+    // Images, Layers and Sources are all removed -> re-add them
+    this.updateMapSource(this.store.selectSnapshot(CommonState.geojsonData) ?? this.DEFAULT_GEOJSON_DATA);
+    this.initImages();
+    this.initLayers();
+
+  }
 
   ngAfterViewInit() {
 
     this.initMap();
+    this.initImages();
     this.initControls();
 
   }
@@ -58,37 +80,61 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.map.on('load', () => {
       this.map.resize();
 
-      // Sources
-      this.map.addSource(this.GEOJSON_SOURCE, {type: 'geojson', data: {type: 'FeatureCollection', features: []}});
+      // Init source
+      this.updateMapSource(this.DEFAULT_GEOJSON_DATA);
 
-      // TODO add custom layer
-      // this.map.addLayer({
-      //   id: 'points',
-      //   type: 'symbol',
-      //   source: this.GEOJSON_SOURCE,
-      //   layout: {
-      //     // get the icon name from the source's "icon" property
-      //     // concatenate the name to get an icon from the style's sprite sheet
-      //     'icon-image': ['concat', ['get', 'icon'], '-15'],
-      //     // get the title name from the source's "title" property
-      //     'text-field': ['get', 'title'],
-      //     'text-font': ['Open Sans Semibold', 'Arial Unicode MS Bold'],
-      //     'text-offset': [0, 0.6],
-      //     'text-anchor': 'top',
-
-      //   }
-      // });
+      // Layers
+      this.initLayers();
 
       // Listen for geojson
       this.subscr.add(
         this.geojsonData$.subscribe(geojson => {
           if (geojson) {
-            (this.map.getSource(this.GEOJSON_SOURCE) as GeoJSONSource).setData(geojson as any);
+            this.updateMapSource(geojson);
           }
         })
       );
 
     });
+
+
+  }
+
+  private initImages() {
+
+    this.MAP_MARKERS_DATA.forEach(marker => {
+      if (!this.map.hasImage(marker.name)) {
+        const img = new Image(48, 48);
+        img.src = marker.url;
+        img.onload = () => this.map.addImage(marker.name, img);
+      }
+    });
+
+  }
+
+  private initLayers() {
+
+    if (!this.map.getLayer('points')) {
+
+      this.map.addLayer({
+        id: 'points',
+        type: 'symbol',
+        source: this.GEOJSON_SOURCE,
+        layout: {
+
+          // Icon
+          'icon-image': ['concat', 'marker-', ['get', 'type']],
+          'icon-offset': [0, -24],
+
+          // Text
+          'text-field': ['get', 'title'],
+          'text-size': 12,
+          'text-offset': [0, 0.6],
+          'text-anchor': 'top',
+        }
+      });
+
+    }
 
   }
 
@@ -127,7 +173,26 @@ export class HomePage implements AfterViewInit, OnDestroy {
   }
 
   onChangeMapStyle(styleUrl: string) {
+    // Set new style
     this.map.setStyle(styleUrl);
+    // Once new style loaded -> re-add images, layers and sources (they are removed)
+    this.map.on('styledata', this.styleDataCallback);
+  }
+
+
+  // Utils ////////////////////////////////////////////////////////////////////////////////////////
+
+
+  updateMapSource(geojson: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry>) {
+
+    const currentSource: GeoJSONSource = this.map.getSource(this.GEOJSON_SOURCE) as GeoJSONSource;
+
+    if (currentSource) {
+      currentSource.setData(geojson);
+    } else {
+      this.map.addSource(this.GEOJSON_SOURCE, {type: 'geojson', data: geojson});
+    }
+
   }
 
 
