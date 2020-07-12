@@ -1,4 +1,6 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
+import {MarkerProps} from '@app/models/marker-props';
+import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {environment} from '@env/environment';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
@@ -16,11 +18,10 @@ import {Observable, Subscription} from 'rxjs';
 })
 export class HomePage implements AfterViewInit, OnDestroy {
 
-  constructor(
-    private store: Store,
-  ) {}
+  // Data /////////////////////////////////////////////////////////////////////////////////////////
 
   private readonly GEOJSON_SOURCE = 'geojsonSource';
+  private readonly GEOJSON_LAYER = 'geojsonSourceLayer';
 
   private readonly MAP_MARKERS_DATA: {name: string; url: string}[] = [
     {name: 'marker-journey', url: `assets/markers/marker-journey.svg`},
@@ -32,16 +33,28 @@ export class HomePage implements AfterViewInit, OnDestroy {
   geojsonData$: Observable<GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry> | null>;
 
   @Select(CommonState.currentGeojsonFeature)
-  currentGeojsonFeature$: Observable<GeoJSON.Feature<GeoJSON.Geometry> | null>;
+  currentGeojsonFeature$: Observable<GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null>;
+
+  // Template elems ///////////////////////////////////////////////////////////////////////////////
 
   @ViewChild('mapContainer')
   mapContainer: ElementRef<HTMLDivElement>;
+
+  // Mapbox ///////////////////////////////////////////////////////////////////////////////////////
 
   public map: Map;
 
   private geolocateCtrl: GeolocateControl;
   public rulerCtrl: RulerControl;
   public stylesCtrl: StylesControl;
+
+  // Others ///////////////////////////////////////////////////////////////////////////////////////
+
+  /**
+   * Flag to prevent "generic" map click action. Typically should be set to true if a feature
+   * or something else which is not a generic point on the map is clicked.
+   */
+  private preventMapClick = false;
 
   private readonly subscr = new Subscription();
 
@@ -56,6 +69,10 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.initLayers();
 
   }
+
+  constructor(
+    private store: Store,
+  ) {}
 
   ngAfterViewInit() {
 
@@ -88,6 +105,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
       // Layers
       this.initLayers();
+      // Event handlers
+      this.initEventHandlers();
 
       // Listen for geojson
       this.subscr.add(
@@ -127,10 +146,10 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   private initLayers() {
 
-    if (!this.map.getLayer('points')) {
+    if (!this.map.getLayer(this.GEOJSON_LAYER)) {
 
       this.map.addLayer({
-        id: 'points',
+        id: this.GEOJSON_LAYER,
         type: 'symbol',
         source: this.GEOJSON_SOURCE,
         layout: {
@@ -149,6 +168,44 @@ export class HomePage implements AfterViewInit, OnDestroy {
       });
 
     }
+
+  }
+
+  private initEventHandlers() {
+
+    this.map.on('click', this.GEOJSON_LAYER, (ev) => {
+      this.preventMapClick = true;
+
+      const feature = ev.features?.[0];
+      if (feature) {
+        // Search for original feature
+        const gjFeatures = this.store.selectSnapshot(CommonState.geojsonDataFeatures);
+        const gjFeature = gjFeatures.find(f => f.id === (feature.properties as any).id);
+
+        if (gjFeature) {
+          this.store.dispatch(new CommonActions.SetCurrentGeojsonFeature({geojsonFeature: gjFeature}));
+        }
+      }
+    });
+
+    this.map.on('click', () => {
+      if (!this.preventMapClick) {
+        this.store.dispatch(new CommonActions.SetCurrentGeojsonFeature({geojsonFeature: null}));
+      }
+
+      // Reaset flag
+      this.preventMapClick = false;
+    });
+
+    // Change the cursor to a pointer when the mouse is over the places layer.
+    this.map.on('mouseenter', this.GEOJSON_LAYER, () => {
+      this.map.getCanvas().style.cursor = 'pointer';
+    });
+
+    // Change it back to a pointer when it leaves.
+    this.map.on('mouseleave', this.GEOJSON_LAYER, () => {
+      this.map.getCanvas().style.cursor = '';
+    });
 
   }
 
@@ -209,7 +266,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   }
 
-  centerMapOn(geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry>) {
+  centerMapOn(geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps>) {
 
     if (geojsonFeature.type === 'Feature') {
       switch (geojsonFeature.geometry.type) {

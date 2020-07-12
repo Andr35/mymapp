@@ -1,7 +1,7 @@
 
 import {ErrorAction} from '@app/models/error-action';
+import {MarkerProps} from '@app/models/marker-props';
 import {StoreAction} from '@app/models/store-action';
-import {MarkerProps} from '../../models/marker-props';
 
 
 // tslint:disable-next-line:no-namespace
@@ -31,7 +31,7 @@ export namespace CommonActions {
   export class SetCurrentGeojsonFeature extends StoreAction {
     static readonly type = `[Common] Set current geojson feature`;
 
-    constructor(public payload: {geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry> | null}) {
+    constructor(public payload: {geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null}) {
       super();
     }
   }

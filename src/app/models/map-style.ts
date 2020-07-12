@@ -9,7 +9,13 @@ export const MAP_DEFAULT_STYLES = [
     label: 'Streets',
     styleName: 'Mapbox Streets',
     styleUrl: 'mapbox://styles/mapbox/streets-v11'
-  }, {
+  },
+  {
+    label: 'Outdoors',
+    styleName: 'Mapbox Outdoors',
+    styleUrl: 'mapbox://styles/mapbox/outdoors-v11'
+  },
+  {
     label: 'Satellite',
     styleName: 'Mapbox Satellite Streets',
     styleUrl: 'mapbox://sprites/mapbox/satellite-streets-v11'

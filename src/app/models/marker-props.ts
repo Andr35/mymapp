@@ -4,6 +4,7 @@ export type MarkerType = 'journey' | 'mountain' | 'bike';
 
 export interface MarkerProps {
 
+  id: string;
   title: string;
   type: MarkerType;
 

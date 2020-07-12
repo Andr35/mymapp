@@ -1,10 +1,11 @@
-import {ChangeDetectionStrategy, Component, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Renderer2} from '@angular/core';
 import {HomePage} from '@app/home/home.page';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {PopoverController} from '@ionic/angular';
 import {Store} from '@ngxs/store';
 import {MapMouseEvent, MapTouchEvent} from 'mapbox-gl';
+import {v4 as uuidv4} from 'uuid';
 import {MapStylesListComponent} from '../map-styles-list/map-styles-list.component';
 
 @Component({
@@ -17,18 +18,24 @@ export class MapToolbarComponent {
 
   constructor(
     public home: HomePage,
-    public popoverCtrl: PopoverController,
-    public store: Store,
-    public renderer: Renderer2,
+    private popoverCtrl: PopoverController,
+    private store: Store,
+    private renderer: Renderer2,
+    private cd: ChangeDetectorRef,
   ) {}
 
   addMarkerToolStatus = false;
 
   private readonly addMarkerCallback: (ev: MapMouseEvent | MapTouchEvent) => void = (ev) => {
 
+    // Disabel tool
+    this.toggleAddMarkerTool();
+
+    // Add new marker
     this.store.dispatch(new CommonActions.AddMarker({
       coordinates: ev.lngLat.toArray(),
       props: {
+        id: uuidv4(),
         type: 'mountain',
         title: '',
         journeys: []
@@ -66,6 +73,8 @@ export class MapToolbarComponent {
       this.home.map.off('click', this.addMarkerCallback);
       this.renderer.removeClass(this.home.map.getCanvasContainer(), 'app-map-clickable');
     }
+
+    this.cd.markForCheck();
   }
 
 }

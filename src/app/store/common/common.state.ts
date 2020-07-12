@@ -1,11 +1,11 @@
 
 import {Injectable} from '@angular/core';
+import {MarkerProps} from '@app/models/marker-props';
 // tslint:disable-next-line:max-line-length
 import {CommonActions} from '@app/store/common/common.actions';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {MapStyle, MAP_DEFAULT_STYLES} from '@models/map-style';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {v4 as uuidv4} from 'uuid';
 
 // const {Filesystem} = Plugins;
 
@@ -16,7 +16,7 @@ export interface CommonStateModel {
 
   mapStyles: MapStyle[];
 
-  currentGeojsonFeature: GeoJSON.Feature<GeoJSON.Geometry> | null;
+  currentGeojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null;
 
   error: Error | null;
 }
@@ -46,6 +46,12 @@ export class CommonState {
 
   @Selector() static geojsonData(state: CommonStateModel) {
     return state.geojsonData;
+  }
+
+  @Selector() static geojsonDataFeatures(state: CommonStateModel): GeoJSON.Feature<GeoJSON.Geometry, MarkerProps>[] {
+    return state.geojsonData?.type === 'FeatureCollection' ?
+      ((state.geojsonData.features ?? []) as GeoJSON.Feature<GeoJSON.Geometry, MarkerProps>[]) :
+      [];
   }
 
   @Selector() static mapStyles(state: CommonStateModel) {
@@ -92,9 +98,9 @@ export class CommonState {
 
     if (geojson.type === 'FeatureCollection') {
 
-      const geojsonPoint: GeoJSON.Feature<GeoJSON.Geometry> = {
+      const geojsonPoint: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> = {
         type: 'Feature',
-        id: uuidv4(),
+        id: props.id,
         geometry: {
           type: 'Point',
           coordinates
@@ -106,7 +112,7 @@ export class CommonState {
 
       ctx.patchState({
         geojsonData: geojson,
-        currentGeojsonFeature: geojson.features[geojson.features.length - 1]
+        currentGeojsonFeature: geojson.features[geojson.features.length - 1] as GeoJSON.Feature<GeoJSON.Geometry, MarkerProps>
       });
     }
 
