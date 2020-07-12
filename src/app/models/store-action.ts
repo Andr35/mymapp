@@ -12,5 +12,5 @@ export abstract class StoreAction {
   /**
    * Optional payload.
    */
-  payload?: any;
+  payload?: unknown;
 }

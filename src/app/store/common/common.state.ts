@@ -3,11 +3,14 @@ import {Injectable} from '@angular/core';
 import {MarkerProps} from '@app/models/marker-props';
 // tslint:disable-next-line:max-line-length
 import {CommonActions} from '@app/store/common/common.actions';
+import {Plugins} from '@capacitor/core';
+import {Platform} from '@ionic/angular';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {MapStyle, MAP_DEFAULT_STYLES} from '@models/map-style';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
+import {saveAs} from 'file-saver';
 
-// const {Filesystem} = Plugins;
+const {} = Plugins;
 
 export interface CommonStateModel {
 
@@ -37,6 +40,8 @@ export interface CommonStateModel {
 })
 @Injectable()
 export class CommonState {
+
+  constructor(private platform: Platform) {}
 
   // Selectors ////////////////////////////////////////////////////////////////////////////////////
 
@@ -74,19 +79,46 @@ export class CommonState {
 
     // TODO handle errors
 
-    // Read file
-    const contentString = await this.readFile(file);
+    const isElectron = this.platform.is('electron');
 
-    if (contentString) {
-      const geojsonData = JSON.parse(contentString);
-      ctx.patchState({file, geojsonData});
+    if (isElectron) {
+      // TODO impl
+
+    } else {
+
+      // Read file
+      const contentString = await this.readFile(file);
+
+      if (contentString) {
+        const geojsonData = JSON.parse(contentString);
+        ctx.patchState({file, geojsonData});
+      }
+
     }
 
   }
 
   @Action(CommonActions.SaveFile)
-  saveFile(ctx: StateContext<CommonStateModel>, {payload: {}}: CommonActions.SaveFile) {
-    // TODO impl
+  saveFile(ctx: StateContext<CommonStateModel>, {}: CommonActions.SaveFile) {
+
+    const isElectron = this.platform.is('electron');
+
+    if (isElectron) {
+      // TODO impl
+
+    } else {
+
+      const file = ctx.getState().file;
+      const geojsonData = ctx.getState().geojsonData;
+
+      if (geojsonData) {
+        // Save content in blob
+        const geojsonBlob = new Blob([JSON.stringify(geojsonData)], {type: 'application/json'});
+        // Downlaod file
+        saveAs(geojsonBlob, file?.name ?? 'journeys.json');
+      }
+    }
+
   }
 
 

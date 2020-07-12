@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Renderer2} from '@angular/core';
 import {HomePage} from '@app/home/home.page';
+import {MarkerType} from '@app/models/marker-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {PopoverController} from '@ionic/angular';
@@ -7,6 +8,12 @@ import {Store} from '@ngxs/store';
 import {MapMouseEvent, MapTouchEvent} from 'mapbox-gl';
 import {v4 as uuidv4} from 'uuid';
 import {MapStylesListComponent} from '../map-styles-list/map-styles-list.component';
+
+
+interface AddMarkerTool {
+  type: MarkerType;
+  color: 'primary';
+}
 
 @Component({
   selector: 'app-map-toolbar',
@@ -16,6 +23,12 @@ import {MapStylesListComponent} from '../map-styles-list/map-styles-list.compone
 })
 export class MapToolbarComponent {
 
+  readonly ADD_MARKER_TOOLS: AddMarkerTool[] = [
+    {type: 'journey', color: 'primary'},
+    {type: 'mountain', color: 'primary'},
+    {type: 'bike', color: 'primary'},
+  ];
+
   constructor(
     public home: HomePage,
     private popoverCtrl: PopoverController,
@@ -24,23 +37,27 @@ export class MapToolbarComponent {
     private cd: ChangeDetectorRef,
   ) {}
 
-  addMarkerToolStatus = false;
+  currentAddMarkerToolType: MarkerType | null = null;
 
   private readonly addMarkerCallback: (ev: MapMouseEvent | MapTouchEvent) => void = (ev) => {
 
-    // Disabel tool
-    this.toggleAddMarkerTool();
+    const markerType = this.currentAddMarkerToolType;
 
-    // Add new marker
-    this.store.dispatch(new CommonActions.AddMarker({
-      coordinates: ev.lngLat.toArray(),
-      props: {
-        id: uuidv4(),
-        type: 'mountain',
-        title: '',
-        journeys: []
-      }
-    }));
+    // Disable tool
+    this.toggleAddMarkerTool(null);
+
+    if (markerType) {
+      // Add new marker
+      this.store.dispatch(new CommonActions.AddMarker({
+        coordinates: ev.lngLat.toArray(),
+        props: {
+          id: uuidv4(),
+          type: markerType,
+          title: '',
+          journeys: []
+        }
+      }));
+    }
 
   }
 
@@ -63,10 +80,10 @@ export class MapToolbarComponent {
     }
   }
 
-  toggleAddMarkerTool() {
-    this.addMarkerToolStatus = !this.addMarkerToolStatus;
+  toggleAddMarkerTool(markerType: MarkerType | null) {
+    this.currentAddMarkerToolType = markerType;
 
-    if (this.addMarkerToolStatus) {
+    if (this.currentAddMarkerToolType) {
       this.home.map.on('click', this.addMarkerCallback);
       this.renderer.addClass(this.home.map.getCanvasContainer(), 'app-map-clickable');
     } else {

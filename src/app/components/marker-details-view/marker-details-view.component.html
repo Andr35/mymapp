@@ -39,8 +39,17 @@
     </div>
 
     <ion-buttons slot="end">
-      <ion-button *ngIf="isModal" (click)="onClose()">
-        <ion-icon slot="icon-only" [src]="'close' | getIcon"></ion-icon>
+
+      <ion-button size="small" (click)="onSave()" [disabled]="form.invalid" color="secondary">
+        <ion-icon size="small" slot="icon-only" [src]="'content-save-outline' | getIcon"></ion-icon>
+      </ion-button>
+
+      <ion-button size="small" (dbclick)="onDeleteMarker()">
+        <ion-icon size="small" slot="icon-only" [src]="'map-marker-remove-outline' | getIcon" color="danger"></ion-icon>
+      </ion-button>
+
+      <ion-button size="small" *ngIf="isModal" (click)="onClose()">
+        <ion-icon size="small" slot="icon-only" [src]="'close' | getIcon"></ion-icon>
       </ion-button>
     </ion-buttons>
 
@@ -73,6 +82,36 @@
             <!-- <ion-label position="fixed">Title</ion-label> -->
             <ion-input type="text" formControlName="title" required></ion-input>
           </ion-item>
+
+          <div>
+
+            <div *ngFor="let journeyControl of formJourneyDatesControl.controls; let i = index">
+
+              <ion-item>
+                <ion-label position="inline">Date</ion-label>
+                <ion-input type="date" [formControl]="journeyControl" required></ion-input>
+
+
+                <ion-buttons slot="end">
+                  <ion-button size="small" (click)="onRemoveJourney(i)">
+                    <ion-icon slot="icon-only" [src]="'map-marker-remove-outline' | getIcon" color="danger"
+                              size="small">
+                    </ion-icon>
+                  </ion-button>
+                </ion-buttons>
+
+              </ion-item>
+
+            </div>
+
+            <ion-buttons>
+              <ion-button size="small" (click)="onAddJourney()">
+                <ion-icon size="small" slot="icon-only" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
+              </ion-button>
+            </ion-buttons>
+
+          </div>
+
 
         </form>
       </ion-col>

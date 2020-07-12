@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, Inject, Input, Optional} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HomePage} from '@app/home/home.page';
 import {MarkerProps} from '@app/models/marker-props';
 import {ModalController} from '@ionic/angular';
@@ -7,6 +7,7 @@ import {ModalController} from '@ionic/angular';
 
 interface MarkerFormValue {
   title: string | null;
+  journeyDates: Date[] | null;
 }
 
 type MarkerFormValueGroup = {[key in (keyof MarkerFormValue)]: unknown};
@@ -39,6 +40,10 @@ export class MarkerDetailsViewComponent {
     return this.form.value;
   }
 
+  get formJourneyDatesControl(): FormArray {
+    return this.form.get('journeyDates') as FormArray;
+  }
+
 
   constructor(
     @Optional() @Inject(HomePage) private home: HomePage | undefined,
@@ -47,7 +52,8 @@ export class MarkerDetailsViewComponent {
   ) {
 
     this.form = this.fb.group({
-      title: [null, Validators.required]
+      title: [null, Validators.required],
+      journeyDates: this.fb.array([]),
     } as MarkerFormValueGroup);
 
   }
@@ -55,13 +61,21 @@ export class MarkerDetailsViewComponent {
 
   private updateFormValue() {
     if (this.geojsonFeature) {
+
+      this.formJourneyDatesControl.clear();
+      this.geojsonFeature.properties.journeys.forEach(() => {
+        this.formJourneyDatesControl.push(this.fb.control(null));
+      });
+
       this.form.patchValue({
-        title: this.geojsonFeature.properties.title
+        title: this.geojsonFeature.properties.title,
+        journeyDates: this.geojsonFeature.properties.journeys.map(j => j.date)
       });
     } else {
       this.form.reset();
       this.form.patchValue({
-        title: null
+        title: null,
+        journeyDates: null,
       });
     }
   }
@@ -71,6 +85,26 @@ export class MarkerDetailsViewComponent {
     if (this.geojsonFeature) {
       this.home?.centerMapOn(this.geojsonFeature);
     }
+  }
+
+  onAddJourney() {
+
+    this.formJourneyDatesControl.push(
+      this.fb.control(null, [Validators.required])
+    );
+
+  }
+
+  onRemoveJourney(index: number) {
+    this.formJourneyDatesControl.removeAt(index);
+  }
+
+  onSave() {
+    // TODO impl
+  }
+
+  onDeleteMarker() {
+    // TODO impl
   }
 
   onClose() {

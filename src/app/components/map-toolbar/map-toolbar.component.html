@@ -22,7 +22,9 @@
       <div class="divider">
       </div>
 
-      <ion-button size="small" (click)="toggleAddMarkerTool()" [color]="addMarkerToolStatus ? 'secondary' : 'primary'">
+      <ion-button size="small" *ngFor="let addMarkerTool of ADD_MARKER_TOOLS"
+                  (click)="toggleAddMarkerTool(addMarkerTool.type)"
+                  [ngClass]="{'tool-selected': currentAddMarkerToolType === addMarkerTool.type}">
         <ion-icon slot="icon-only" size="small" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
       </ion-button>
 
