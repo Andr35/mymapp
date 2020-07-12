@@ -2,8 +2,10 @@
 import {Injectable} from '@angular/core';
 // tslint:disable-next-line:max-line-length
 import {CommonActions} from '@app/store/common/common.actions';
+import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
+import {MapStyle, MAP_DEFAULT_STYLES} from '@models/map-style';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {MapStyle, MAP_DEFAULT_STYLES} from '../../models/map-style';
+import {v4 as uuidv4} from 'uuid';
 
 // const {Filesystem} = Plugins;
 
@@ -14,6 +16,8 @@ export interface CommonStateModel {
 
   mapStyles: MapStyle[];
 
+  currentGeojsonFeature: GeoJSON.Feature<GeoJSON.Geometry> | null;
+
   error: Error | null;
 }
 
@@ -23,7 +27,10 @@ export interface CommonStateModel {
   defaults: {
     file: null,
     geojsonData: null,
+
     mapStyles: MAP_DEFAULT_STYLES,
+
+    currentGeojsonFeature: null,
 
     error: null
   }
@@ -43,6 +50,10 @@ export class CommonState {
 
   @Selector() static mapStyles(state: CommonStateModel) {
     return state.mapStyles;
+  }
+
+  @Selector() static currentGeojsonFeature(state: CommonStateModel) {
+    return state.currentGeojsonFeature;
   }
 
   @Selector() static error(state: CommonStateModel) {
@@ -70,6 +81,44 @@ export class CommonState {
   @Action(CommonActions.SaveFile)
   saveFile(ctx: StateContext<CommonStateModel>, {payload: {}}: CommonActions.SaveFile) {
     // TODO impl
+  }
+
+
+  @Action(CommonActions.AddMarker)
+  addMarker(ctx: StateContext<CommonStateModel>, {payload: {coordinates, props}}: CommonActions.AddMarker) {
+
+    // If geojson does not exist -> no file loaded -> use default
+    const geojson = {...(ctx.getState().geojsonData ?? DEFAULT_GEOJSON_DATA)};
+
+    if (geojson.type === 'FeatureCollection') {
+
+      const geojsonPoint: GeoJSON.Feature<GeoJSON.Geometry> = {
+        type: 'Feature',
+        id: uuidv4(),
+        geometry: {
+          type: 'Point',
+          coordinates
+        },
+        properties: props
+      };
+
+      geojson.features = [...geojson.features, geojsonPoint];
+
+      ctx.patchState({
+        geojsonData: geojson,
+        currentGeojsonFeature: geojson.features[geojson.features.length - 1]
+      });
+    }
+
+  }
+
+  @Action(CommonActions.SetCurrentGeojsonFeature)
+  setCurrentGeojsonFeature(ctx: StateContext<CommonStateModel>, {payload: {geojsonFeature}}: CommonActions.SetCurrentGeojsonFeature) {
+
+    ctx.patchState({
+      currentGeojsonFeature: geojsonFeature
+    });
+
   }
 
 

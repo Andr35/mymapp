@@ -34,6 +34,7 @@
     "mapbox-gl-controls": "^1.6.4",
     "rxjs": "^6.6.0",
     "tslib": "^2.0.0",
+    "uuid": "^8.2.0",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

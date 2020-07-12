@@ -25,6 +25,9 @@
       ],
       "@env/*": [
         "environments/*"
+      ],
+      "@models/*": [
+        "app/models/*"
       ]
     }
   },

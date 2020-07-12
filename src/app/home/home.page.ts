@@ -1,6 +1,7 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {CommonState} from '@app/store/common/common.state';
 import {environment} from '@env/environment';
+import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {Select, Store} from '@ngxs/store';
 import {GeoJSONSource, GeolocateControl, Map} from 'mapbox-gl';
 import RulerControl from 'mapbox-gl-controls/lib/ruler';
@@ -20,7 +21,6 @@ export class HomePage implements AfterViewInit, OnDestroy {
   ) {}
 
   private readonly GEOJSON_SOURCE = 'geojsonSource';
-  private readonly DEFAULT_GEOJSON_DATA: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {type: 'FeatureCollection', features: []};
 
   private readonly MAP_MARKERS_DATA: {name: string; url: string}[] = [
     {name: 'marker-journey', url: `assets/markers/marker-journey.svg`},
@@ -31,10 +31,13 @@ export class HomePage implements AfterViewInit, OnDestroy {
   @Select(CommonState.geojsonData)
   geojsonData$: Observable<GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry> | null>;
 
+  @Select(CommonState.currentGeojsonFeature)
+  currentGeojsonFeature$: Observable<GeoJSON.Feature<GeoJSON.Geometry> | null>;
+
   @ViewChild('mapContainer')
   mapContainer: ElementRef<HTMLDivElement>;
 
-  private map: Map;
+  public map: Map;
 
   private geolocateCtrl: GeolocateControl;
   public rulerCtrl: RulerControl;
@@ -48,7 +51,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     this.map.off('styledata', this.styleDataCallback);
 
     // Images, Layers and Sources are all removed -> re-add them
-    this.updateMapSource(this.store.selectSnapshot(CommonState.geojsonData) ?? this.DEFAULT_GEOJSON_DATA);
+    this.updateMapSource(this.store.selectSnapshot(CommonState.geojsonData) ?? DEFAULT_GEOJSON_DATA);
     this.initImages();
     this.initLayers();
 
@@ -81,7 +84,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
       this.map.resize();
 
       // Init source
-      this.updateMapSource(this.DEFAULT_GEOJSON_DATA);
+      this.updateMapSource(DEFAULT_GEOJSON_DATA);
 
       // Layers
       this.initLayers();
@@ -91,6 +94,16 @@ export class HomePage implements AfterViewInit, OnDestroy {
         this.geojsonData$.subscribe(geojson => {
           if (geojson) {
             this.updateMapSource(geojson);
+          }
+        })
+      );
+
+      // Listen for current geojson feature
+      this.subscr.add(
+        this.currentGeojsonFeature$.subscribe(geojsonFeature => {
+          if (geojsonFeature) {
+            // Center map on the feature
+            this.centerMapOn(geojsonFeature);
           }
         })
       );
@@ -131,6 +144,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
           'text-size': 12,
           'text-offset': [0, 0.6],
           'text-anchor': 'top',
+          'icon-allow-overlap': true
         }
       });
 
@@ -193,6 +207,21 @@ export class HomePage implements AfterViewInit, OnDestroy {
       this.map.addSource(this.GEOJSON_SOURCE, {type: 'geojson', data: geojson});
     }
 
+  }
+
+  centerMapOn(geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry>) {
+
+    if (geojsonFeature.type === 'Feature') {
+      switch (geojsonFeature.geometry.type) {
+        case 'Point':
+          this.map.flyTo({center: geojsonFeature.geometry.coordinates as [number, number]});
+          break;
+
+        default:
+          console.warn(`Cannot center map on geojson feature of type ${geojsonFeature.geometry.type}`);
+          break;
+      }
+    }
   }
 
 

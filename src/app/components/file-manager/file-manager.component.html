@@ -13,7 +13,7 @@
           <input #fileInput type="file" class="file-input" accept="application/json"
                  (change)="onOpenFile($event.srcElement.files)">
 
-          <ion-button (click)="onOpenFilePrompt()">
+          <ion-button size="small" (click)="onOpenFilePrompt()">
             <span>Open</span>
             <ion-icon slot="end" [src]="'folder-open-outline' | getIcon"></ion-icon>
           </ion-button>
@@ -26,7 +26,7 @@
           </ion-text>
 
           <!-- (click)="onSave()" -->
-          <ion-button>
+          <ion-button size="small">
             <span>Save</span>
             <ion-icon slot="end" [src]="'content-save-outline' | getIcon"></ion-icon>
           </ion-button>
