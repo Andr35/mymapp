@@ -72,6 +72,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   constructor(
     private store: Store,
+    // private modalCtrl: ModalController,
   ) {}
 
   ngAfterViewInit() {
@@ -119,10 +120,18 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
       // Listen for current geojson feature
       this.subscr.add(
-        this.currentGeojsonFeature$.subscribe(geojsonFeature => {
+        this.currentGeojsonFeature$.subscribe(async geojsonFeature => {
           if (geojsonFeature) {
             // Center map on the feature
             this.centerMapOn(geojsonFeature);
+
+            // On small screen
+            // const modal = await this.modalCtrl.create({
+            //   component: MarkerDetailsViewComponent,
+            //   componentProps: {geojsonFeature, isModal: true},
+            // });
+
+            // modal.present();
           }
         })
       );

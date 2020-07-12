@@ -1,7 +1,8 @@
-import {ChangeDetectionStrategy, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, Component, Inject, Input, Optional} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HomePage} from '@app/home/home.page';
 import {MarkerProps} from '@app/models/marker-props';
+import {ModalController} from '@ionic/angular';
 
 
 interface MarkerFormValue {
@@ -11,12 +12,15 @@ interface MarkerFormValue {
 type MarkerFormValueGroup = {[key in (keyof MarkerFormValue)]: unknown};
 
 @Component({
-  selector: 'app-marker-details-card',
-  templateUrl: './marker-details-card.component.html',
-  styleUrls: ['./marker-details-card.component.scss'],
+  selector: 'app-marker-details-view',
+  templateUrl: './marker-details-view.component.html',
+  styleUrls: ['./marker-details-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MarkerDetailsCardComponent {
+export class MarkerDetailsViewComponent {
+
+  @Input()
+  isModal?: boolean;
 
   private _geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null;
   @Input()
@@ -37,8 +41,9 @@ export class MarkerDetailsCardComponent {
 
 
   constructor(
-    private home: HomePage,
+    @Optional() @Inject(HomePage) private home: HomePage | undefined,
     private fb: FormBuilder,
+    private modalCtrl: ModalController,
   ) {
 
     this.form = this.fb.group({
@@ -64,7 +69,13 @@ export class MarkerDetailsCardComponent {
 
   onCenterOnMap() {
     if (this.geojsonFeature) {
-      this.home.centerMapOn(this.geojsonFeature);
+      this.home?.centerMapOn(this.geojsonFeature);
+    }
+  }
+
+  onClose() {
+    if (this.isModal) {
+      this.modalCtrl.dismiss();
     }
   }
 

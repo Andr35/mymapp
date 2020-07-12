@@ -6,8 +6,8 @@
 
   <app-file-manager class="file-manager-toolbar"></app-file-manager>
 
-  <app-marker-details-card class="marker-details-card" *ngIf="currentGeojsonFeature$ | async; let feature"
+  <app-marker-details-view class="marker-details-view" *ngIf="currentGeojsonFeature$ | async; let feature"
                            [geojsonFeature]="feature">
-  </app-marker-details-card>
+  </app-marker-details-view>
 
 </ion-content>

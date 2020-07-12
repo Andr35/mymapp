@@ -1,19 +1,19 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {IonicModule} from '@ionic/angular';
-import {MarkerDetailsCardComponent} from './marker-details-card.component';
+import {MarkerDetailsViewComponent} from './marker-details-view.component';
 
 
-describe('MarkerDetailsCardComponent', () => {
-  let component: MarkerDetailsCardComponent;
-  let fixture: ComponentFixture<MarkerDetailsCardComponent>;
+describe('MarkerDetailsViewComponent', () => {
+  let component: MarkerDetailsViewComponent;
+  let fixture: ComponentFixture<MarkerDetailsViewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MarkerDetailsCardComponent],
+      declarations: [MarkerDetailsViewComponent],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MarkerDetailsCardComponent);
+    fixture = TestBed.createComponent(MarkerDetailsViewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

@@ -1,0 +1,83 @@
+<ng-container *ngIf="isModal">
+
+  <ion-header>
+    <ng-container *ngTemplateOutlet="headerTmpl"></ng-container>
+  </ion-header>
+
+  <ion-content>
+    <ng-container *ngTemplateOutlet="contentTmpl"></ng-container>
+  </ion-content>
+
+</ng-container>
+
+<ng-container *ngIf="!isModal">
+
+  <ion-card>
+
+    <ion-card-header>
+      <ng-container *ngTemplateOutlet="headerTmpl"></ng-container>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ng-container *ngTemplateOutlet="contentTmpl"></ng-container>
+    </ion-card-content>
+
+  </ion-card>
+
+</ng-container>
+
+
+<!-- templates -->
+
+<ng-template #headerTmpl>
+
+  <ion-toolbar>
+    <div slot="start" class="app-flex ion-align-items-center">
+      <ion-img class="icon-type ion-margin-end"
+               [src]="('assets/bullets/bullet-' + geojsonFeature.properties.type) + '.svg'"></ion-img>
+      <h2 class="ion-no-margin">{{ formValue.title || 'Unknown'}}</h2>
+    </div>
+
+    <ion-buttons slot="end">
+      <ion-button *ngIf="isModal" (click)="onClose()">
+        <ion-icon slot="icon-only" [src]="'close' | getIcon"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+
+</ng-template>
+
+<ng-template #contentTmpl>
+
+  <ion-grid class="ion-no-padding">
+    <ion-row>
+      <ion-col size="12" class="app-flex ion-align-items-center">
+        <ion-buttons>
+          <ion-button size="small" (click)="onCenterOnMap()">
+            <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+        <ion-note>{{ geojsonFeature.geometry.coordinates[1] | number: '1.6-6' }},
+          {{ geojsonFeature.geometry.coordinates[0] | number: '1.6-6' }}
+        </ion-note>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12">
+        <form [formGroup]="form">
+
+          <ion-item>
+            <ion-label position="inline">Title</ion-label>
+            <!-- <ion-label position="fixed">Title</ion-label> -->
+            <ion-input type="text" formControlName="title" required></ion-input>
+          </ion-item>
+
+        </form>
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ng-template>
