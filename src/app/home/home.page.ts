@@ -1,5 +1,5 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
-import {MarkerProps} from '@app/models/marker-props';
+import {PointProps} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {environment} from '@env/environment';
@@ -33,7 +33,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   geojsonData$: Observable<GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry> | null>;
 
   @Select(CommonState.currentGeojsonFeature)
-  currentGeojsonFeature$: Observable<GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null>;
+  currentGeojsonFeature$: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;
 
   // Template elems ///////////////////////////////////////////////////////////////////////////////
 
@@ -275,7 +275,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   }
 
-  centerMapOn(geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps>) {
+  centerMapOn(geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, PointProps>) {
 
     if (geojsonFeature.type === 'Feature') {
       switch (geojsonFeature.geometry.type) {

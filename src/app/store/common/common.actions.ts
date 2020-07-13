@@ -1,6 +1,6 @@
 
 import {ErrorAction} from '@app/models/error-action';
-import {MarkerProps} from '@app/models/marker-props';
+import {PointProps} from '@app/models/geojson-props';
 import {StoreAction} from '@app/models/store-action';
 
 
@@ -23,7 +23,7 @@ export namespace CommonActions {
   export class AddMarker extends StoreAction {
     static readonly type = `[Common] Add marker`;
 
-    constructor(public payload: {coordinates: GeoJSON.Position, props: MarkerProps}) {
+    constructor(public payload: {coordinates: GeoJSON.Position, props: PointProps}) {
       super();
     }
   }
@@ -31,7 +31,7 @@ export namespace CommonActions {
   export class SetCurrentGeojsonFeature extends StoreAction {
     static readonly type = `[Common] Set current geojson feature`;
 
-    constructor(public payload: {geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null}) {
+    constructor(public payload: {geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null}) {
       super();
     }
   }

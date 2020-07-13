@@ -1,7 +1,6 @@
 
 import {Injectable} from '@angular/core';
-import {MarkerProps} from '@app/models/marker-props';
-// tslint:disable-next-line:max-line-length
+import {PointProps} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {Plugins} from '@capacitor/core';
 import {Platform} from '@ionic/angular';
@@ -19,7 +18,7 @@ export interface CommonStateModel {
 
   mapStyles: MapStyle[];
 
-  currentGeojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null;
+  currentGeojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null;
 
   error: Error | null;
 }
@@ -53,9 +52,9 @@ export class CommonState {
     return state.geojsonData;
   }
 
-  @Selector() static geojsonDataFeatures(state: CommonStateModel): GeoJSON.Feature<GeoJSON.Geometry, MarkerProps>[] {
+  @Selector() static geojsonDataFeatures(state: CommonStateModel): GeoJSON.Feature<GeoJSON.Geometry, PointProps>[] {
     return state.geojsonData?.type === 'FeatureCollection' ?
-      ((state.geojsonData.features ?? []) as GeoJSON.Feature<GeoJSON.Geometry, MarkerProps>[]) :
+      ((state.geojsonData.features ?? []) as GeoJSON.Feature<GeoJSON.Geometry, PointProps>[]) :
       [];
   }
 
@@ -130,7 +129,7 @@ export class CommonState {
 
     if (geojson.type === 'FeatureCollection') {
 
-      const geojsonPoint: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> = {
+      const geojsonPoint: GeoJSON.Feature<GeoJSON.Point, PointProps> = {
         type: 'Feature',
         id: props.id,
         geometry: {
@@ -144,7 +143,7 @@ export class CommonState {
 
       ctx.patchState({
         geojsonData: geojson,
-        currentGeojsonFeature: geojson.features[geojson.features.length - 1] as GeoJSON.Feature<GeoJSON.Geometry, MarkerProps>
+        currentGeojsonFeature: geojson.features[geojson.features.length - 1] as GeoJSON.Feature<GeoJSON.Geometry, PointProps>
       });
     }
 

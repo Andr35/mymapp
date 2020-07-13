@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Renderer2} from '@angular/core';
 import {HomePage} from '@app/home/home.page';
-import {MarkerType} from '@app/models/marker-props';
+import {JourneyType} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {PopoverController} from '@ionic/angular';
@@ -11,7 +11,7 @@ import {MapStylesListComponent} from '../map-styles-list/map-styles-list.compone
 
 
 interface AddMarkerTool {
-  type: MarkerType;
+  type: JourneyType;
   color: 'primary';
 }
 
@@ -37,7 +37,7 @@ export class MapToolbarComponent {
     private cd: ChangeDetectorRef,
   ) {}
 
-  currentAddMarkerToolType: MarkerType | null = null;
+  currentAddMarkerToolType: JourneyType | null = null;
 
   private readonly addMarkerCallback: (ev: MapMouseEvent | MapTouchEvent) => void = (ev) => {
 
@@ -80,7 +80,7 @@ export class MapToolbarComponent {
     }
   }
 
-  toggleAddMarkerTool(markerType: MarkerType | null) {
+  toggleAddMarkerTool(markerType: JourneyType | null) {
     this.currentAddMarkerToolType = markerType;
 
     if (this.currentAddMarkerToolType) {

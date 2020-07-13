@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
-import {MarkerProps} from '@app/models/marker-props';
+import {PointProps} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {hasActionsExecuting} from '@ngxs-labs/actions-executing';
@@ -17,7 +17,7 @@ export class FileManagerComponent {
   @Select(hasActionsExecuting()) loading$: Observable<boolean>;
 
   @Select(CommonState.file) file$: Observable<File | null>;
-  @Select(CommonState.geojsonData) geojsonData$: Observable<GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null>;
+  @Select(CommonState.geojsonData) geojsonData$: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;
 
   @ViewChild('fileInput') fileInputElem: ElementRef<HTMLInputElement>;
 

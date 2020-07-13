@@ -1,7 +1,7 @@
 import {ChangeDetectionStrategy, Component, Inject, Input, Optional} from '@angular/core';
 import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {HomePage} from '@app/home/home.page';
-import {MarkerProps} from '@app/models/marker-props';
+import {PointProps} from '@app/models/geojson-props';
 import {ModalController} from '@ionic/angular';
 
 
@@ -23,12 +23,12 @@ export class MarkerDetailsViewComponent {
   @Input()
   isModal?: boolean;
 
-  private _geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null;
+  private _geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null;
   @Input()
-  public get geojsonFeature(): GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null {
+  public get geojsonFeature(): GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null {
     return this._geojsonFeature;
   }
-  public set geojsonFeature(value: GeoJSON.Feature<GeoJSON.Geometry, MarkerProps> | null) {
+  public set geojsonFeature(value: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null) {
     this._geojsonFeature = value;
 
     this.updateFormValue();
