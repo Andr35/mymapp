@@ -1,19 +1,19 @@
 import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 import {IonicModule} from '@ionic/angular';
-import {MapToolbarComponent} from './map-styles-list.component';
+import {MapStylesListComponent} from './map-styles-list.component';
 
 
-describe('MapToolbarComponent', () => {
-  let component: MapToolbarComponent;
-  let fixture: ComponentFixture<MapToolbarComponent>;
+describe('MapStylesListComponent', () => {
+  let component: MapStylesListComponent;
+  let fixture: ComponentFixture<MapStylesListComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [MapToolbarComponent],
+      declarations: [MapStylesListComponent],
       imports: [IonicModule.forRoot()]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MapToolbarComponent);
+    fixture = TestBed.createComponent(MapStylesListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   }));

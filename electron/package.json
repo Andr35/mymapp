@@ -1,24 +1,44 @@
 {
   "name": "mapp",
   "version": "1.0.0",
-  "description": "An Amazing Capacitor App",
+  "description": "Mapp application",
   "main": "index.js",
+  "author": {
+    "name": "Andr35",
+    "email": "a@b.com"
+  },
+  "license": "ISC",
+  "homepage": "https://github.com/Andr35/mapp",
   "scripts": {
     "electron:start": "electron ./",
     "electron:start:dev": "electron http://localhost:4200",
-    "electron:start:prod": "electron ./"
+    "electron:start:prod": "electron ./",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "dependencies": {
     "@capacitor/electron": "^2.2.1",
     "electron-is-dev": "^1.1.0"
   },
   "devDependencies": {
-    "electron": "^9.0.5"
+    "electron": "^9.0.5",
+    "electron-builder": "^22.7.0"
   },
   "keywords": [
     "capacitor",
     "electron"
   ],
-  "author": "",
-  "license": "ISC"
+  "build": {
+    "appId": "it.andr35.${name}",
+    "copyright": "Copyright © year ${author}",
+    "linux": {
+      "target": [
+        "deb",
+        "tar.gz"
+      ],
+      "synopsis": "Mapp App",
+      "description": "Mapp Application",
+      "category": "Utility"
+    }
+  }
 }

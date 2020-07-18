@@ -23,12 +23,12 @@ export class MarkerDetailsViewComponent {
   @Input()
   isModal?: boolean;
 
-  private _geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null;
+  private _geojsonFeature: GeoJSON.Feature<GeoJSON.Point, PointProps> | null;
   @Input()
-  public get geojsonFeature(): GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null {
+  public get geojsonFeature(): GeoJSON.Feature<GeoJSON.Point, PointProps> | null {
     return this._geojsonFeature;
   }
-  public set geojsonFeature(value: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null) {
+  public set geojsonFeature(value: GeoJSON.Feature<GeoJSON.Point, PointProps> | null) {
     this._geojsonFeature = value;
 
     this.updateFormValue();

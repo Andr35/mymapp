@@ -34,7 +34,7 @@
   <ion-toolbar>
     <div slot="start" class="app-flex ion-align-items-center">
       <ion-img class="icon-type ion-margin-end"
-               [src]="('assets/bullets/bullet-' + geojsonFeature.properties.type) + '.svg'"></ion-img>
+               [src]="('assets/bullets/bullet-' + geojsonFeature?.properties.type) + '.svg'"></ion-img>
       <h2 class="ion-no-margin">{{ formValue.title || 'Unknown'}}</h2>
     </div>
 
@@ -67,8 +67,8 @@
             <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
           </ion-button>
         </ion-buttons>
-        <ion-note>{{ geojsonFeature.geometry.coordinates[1] | number: '1.6-6' }},
-          {{ geojsonFeature.geometry.coordinates[0] | number: '1.6-6' }}
+        <ion-note>{{ geojsonFeature?.geometry.coordinates[1] | number: '1.6-6' }},
+          {{ geojsonFeature?.geometry.coordinates[0] | number: '1.6-6' }}
         </ion-note>
       </ion-col>
     </ion-row>
