@@ -27,6 +27,7 @@ export class MapToolbarComponent {
     {type: 'journey', color: 'primary'},
     {type: 'mountain', color: 'primary'},
     {type: 'bike', color: 'primary'},
+    {type: 'sky', color: 'primary'},
   ];
 
   constructor(

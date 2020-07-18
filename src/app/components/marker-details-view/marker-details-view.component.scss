@@ -1,7 +1,11 @@
 
-$icon-type-size: 32px;
+$icon-type-size: 48px;
 
 .icon-type {
   width: $icon-type-size;
   height: $icon-type-size;
+}
+
+.padding-small {
+  padding: 6px;
 }

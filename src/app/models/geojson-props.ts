@@ -1,6 +1,6 @@
 
 
-export type JourneyType = 'journey' | 'mountain' | 'bike';
+export type JourneyType = 'journey' | 'mountain' | 'bike' | 'sky';
 
 export interface PointProps {
 

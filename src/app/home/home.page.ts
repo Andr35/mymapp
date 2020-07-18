@@ -27,6 +27,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
     {name: 'marker-journey', url: `assets/markers/marker-journey.svg`},
     {name: 'marker-mountain', url: `assets/markers/marker-mountain.svg`},
     {name: 'marker-bike', url: `assets/markers/marker-bike.svg`},
+    {name: 'marker-sky', url: `assets/markers/marker-sky.svg`},
   ];
 
   @Select(CommonState.geojsonData)

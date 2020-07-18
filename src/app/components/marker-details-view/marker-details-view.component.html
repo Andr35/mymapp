@@ -14,11 +14,11 @@
 
   <ion-card>
 
-    <ion-card-header>
+    <ion-card-header class="padding-small">
       <ng-container *ngTemplateOutlet="headerTmpl"></ng-container>
     </ion-card-header>
 
-    <ion-card-content>
+    <ion-card-content class="padding-small">
       <ng-container *ngTemplateOutlet="contentTmpl"></ng-container>
     </ion-card-content>
 
@@ -38,7 +38,7 @@
       <h2 class="ion-no-margin">{{ formValue.title || 'Unknown'}}</h2>
     </div>
 
-    <ion-buttons slot="end">
+    <ion-buttons slot="end" class="ion-margin-start">
 
       <ion-button size="small" (click)="onSave()" [disabled]="form.invalid" color="secondary">
         <ion-icon size="small" slot="icon-only" [src]="'content-save-outline' | getIcon"></ion-icon>
