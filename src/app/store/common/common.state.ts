@@ -2,14 +2,14 @@
 import {Injectable} from '@angular/core';
 import {PointProps} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
-import {Plugins} from '@capacitor/core';
+import {FilesystemDirectory, FilesystemEncoding, Plugins} from '@capacitor/core';
 import {Platform} from '@ionic/angular';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {MapStyle, MAP_DEFAULT_STYLES} from '@models/map-style';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
 import {saveAs} from 'file-saver';
 
-const {} = Plugins;
+const {Filesystem} = Plugins;
 
 export interface CommonStateModel {
 
@@ -79,45 +79,66 @@ export class CommonState {
     // TODO handle errors
 
     const isElectron = this.platform.is('electron');
+    const filePath: string | undefined = (file as any).path;
 
-    if (isElectron) {
-      // TODO impl
+    let contentString: string | null | undefined;
 
+    if (isElectron && filePath) {
+
+      // File contains path field -> use it to read file
+      const readRes = await Filesystem.readFile({
+        path: filePath,
+        directory: 'DRIVE_ROOT' as FilesystemDirectory,
+        encoding: FilesystemEncoding.UTF8
+      });
+      contentString = readRes.data;
     } else {
-
       // Read file
-      const contentString = await this.readFile(file);
+      contentString = await this.readFile(file);
+    }
 
-      if (contentString) {
-        const geojsonData = JSON.parse(contentString);
-        ctx.patchState({file, geojsonData});
-      }
-
+    if (contentString) {
+      const geojsonData = JSON.parse(contentString);
+      ctx.patchState({file, geojsonData});
     }
 
   }
 
   @Action(CommonActions.SaveFile)
-  saveFile(ctx: StateContext<CommonStateModel>, {}: CommonActions.SaveFile) {
+  async saveFile(ctx: StateContext<CommonStateModel>, {}: CommonActions.SaveFile) {
+
+    // TODO handle errors
+
+    const file = ctx.getState().file;
+    const geojsonData = ctx.getState().geojsonData;
 
     const isElectron = this.platform.is('electron');
+    const filePath: string | undefined = (file as any)?.path;
 
-    if (isElectron) {
-      // TODO impl
+    if (geojsonData) {
 
-    } else {
+      const geojsonString = JSON.stringify(geojsonData);
 
-      const file = ctx.getState().file;
-      const geojsonData = ctx.getState().geojsonData;
+      if (isElectron && filePath) {
 
-      if (geojsonData) {
+        await Filesystem.writeFile({
+          data: geojsonString,
+          path: filePath,
+          encoding: FilesystemEncoding.UTF8,
+          recursive: true,
+          directory: 'DRIVE_ROOT' as FilesystemDirectory,
+        });
+
+      } else {
+
         // Save content in blob
-        const geojsonBlob = new Blob([JSON.stringify(geojsonData)], {type: 'application/json'});
+        const geojsonBlob = new Blob([geojsonString], {type: 'application/json'});
+
         // Downlaod file
         saveAs(geojsonBlob, file?.name ?? 'journeys.json');
       }
-    }
 
+    }
   }
 
 

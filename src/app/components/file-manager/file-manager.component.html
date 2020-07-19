@@ -26,9 +26,9 @@
             <span *ngIf="!(file$ | async)">New File</span>
           </ion-text>
 
-          <ion-button size="small" (click)="onSave()">
+          <ion-button size="small" (click)="onSave()" [disabled]="loading$ | async" [color]="saveBtnColor">
             <span>Save</span>
-            <ion-icon slot="end" [src]="'content-save-outline' | getIcon"></ion-icon>
+            <ion-icon slot="end" [src]="saveBtnIcon | getIcon"></ion-icon>
           </ion-button>
         </ion-col>
 

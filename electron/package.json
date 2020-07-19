@@ -2,27 +2,27 @@
   "name": "mapp",
   "version": "1.0.0",
   "description": "Mapp application",
-  "main": "index.js",
+  "main": "./build/index.js",
   "author": {
     "name": "Andr35",
     "email": "a@b.com"
   },
-  "license": "ISC",
+  "license": "MIT",
   "homepage": "https://github.com/Andr35/mapp",
   "scripts": {
-    "electron:start": "electron ./",
-    "electron:start:dev": "electron http://localhost:4200",
-    "electron:start:prod": "electron ./",
-    "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "build": "tsc",
+    "electron:start": "npm run build && electron ./",
+    "electron:pack": "npm run build && electron-builder build --dir",
+    "electron:build-windows": "npm run build && electron-builder build --windows",
+    "electron:build-mac": "npm run build && electron-builder build --mac"
   },
   "dependencies": {
-    "@capacitor/electron": "^2.2.1",
-    "electron-is-dev": "^1.1.0"
+    "@capacitor-community/electron-core": "^0.4.0"
   },
   "devDependencies": {
-    "electron": "^9.0.5",
-    "electron-builder": "^22.7.0"
+    "electron": "~9.0.3",
+    "electron-builder": "~22.7.0",
+    "typescript": "~3.9.5"
   },
   "keywords": [
     "capacitor",
@@ -30,7 +30,24 @@
   ],
   "build": {
     "appId": "it.andr35.${name}",
-    "copyright": "Copyright © year ${author}",
+    "productName": "Mapp",
+    "files": [
+      "assets/*",
+      "build/index.js",
+      "preloader.js",
+      "plugins/*",
+      "capacitor.config.json",
+      "app/**"
+    ],
+    "mac": {
+      "category": "public.app-category.developer-tools",
+      "target": "dmg",
+      "icon": "appIcon.png"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "appIcon.ico"
+    },
     "linux": {
       "target": [
         "deb",

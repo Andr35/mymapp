@@ -1,10 +1,11 @@
-import {ChangeDetectionStrategy, Component, ElementRef, ViewChild} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewChild} from '@angular/core';
 import {PointProps} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {hasActionsExecuting} from '@ngxs-labs/actions-executing';
 import {Select, Store} from '@ngxs/store';
 import {Observable} from 'rxjs';
+import {finalize} from 'rxjs/operators';
 
 @Component({
   selector: 'app-file-manager',
@@ -21,8 +22,38 @@ export class FileManagerComponent {
 
   @ViewChild('fileInput') fileInputElem: ElementRef<HTMLInputElement>;
 
+  /**
+   * Flag indicating the save operation status
+   */
+  savingStatus: 'success' | 'error' | null = null;
 
-  constructor(private store: Store) {}
+  get saveBtnColor(): string {
+    switch (this.savingStatus) {
+      case 'success':
+        return 'success';
+
+      case 'error':
+        return 'danger';
+
+      default:
+        return 'primary';
+    }
+  }
+
+  get saveBtnIcon(): string {
+    switch (this.savingStatus) {
+      case 'success':
+        return 'check';
+
+      case 'error':
+        return 'close';
+
+      default:
+        return 'content-save-outline';
+    }
+  }
+
+  constructor(private store: Store, private cd: ChangeDetectorRef) {}
 
 
   onOpenFilePrompt() {
@@ -42,7 +73,28 @@ export class FileManagerComponent {
   }
 
   onSave() {
-    this.store.dispatch(new CommonActions.SaveFile());
+    this.resetSavingFlag();
+
+    this.store.dispatch(new CommonActions.SaveFile()).pipe(
+      finalize(() => {
+        this.cd.markForCheck();
+        setTimeout(() => {
+          this.resetSavingFlag();
+        }, 3000);
+      })
+    ).subscribe(
+      () => {
+        this.savingStatus = 'success';
+      },
+      () => {
+        this.savingStatus = 'error';
+      }
+    );
+  }
+
+  private resetSavingFlag() {
+    this.savingStatus = null;
+    this.cd.markForCheck();
   }
 
 }
