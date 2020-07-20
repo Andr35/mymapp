@@ -2,7 +2,13 @@ import {createCapacitorElectronApp} from '@capacitor-community/electron-core';
 import {app} from 'electron';
 
 // The MainWindow object can be accessed via myCapacitorApp.getMainWindow()
-const myCapacitorApp = createCapacitorElectronApp();
+const myCapacitorApp = createCapacitorElectronApp({
+  mainWindow: {
+    windowOptions: {
+      frame: false
+    }
+  }
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
