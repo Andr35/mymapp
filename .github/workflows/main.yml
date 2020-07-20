@@ -33,7 +33,7 @@ jobs:
             ${{ runner.OS }}-node-
 
       - name: Install dependencies
-        run: npm install # Usage of "npm ci" avoided to exploit cache
+        run: npm ci
 
       - name: Lint
         run: npm run lint
@@ -60,7 +60,7 @@ jobs:
             ${{ runner.OS }}-node-
 
       - name: Install dependencies
-        run: npm install # Usage of "npm ci" avoided to exploit cache
+        run: npm ci
 
       - name: Build
         run: npm run build:prod
