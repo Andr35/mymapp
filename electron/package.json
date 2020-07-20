@@ -51,8 +51,7 @@
     },
     "linux": {
       "target": [
-        "deb",
-        "tar.gz"
+        "deb"
       ],
       "synopsis": "Mapp App",
       "description": "Mapp Application",
