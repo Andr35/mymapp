@@ -3,19 +3,19 @@
 
     <ion-buttons class="app-flex-column">
 
-      <ion-button size="small" (click)="home.onToggleGeolocation()">
+      <ion-button size="small" (click)="home.onToggleGeolocation()" appTooltip="Show current position">
         <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
       </ion-button>
 
       <div class="divider">
       </div>
 
-      <ion-button size="small" (click)="home.onToggleRuler()"
+      <ion-button size="small" (click)="home.onToggleRuler()" appTooltip="Measure distances"
                   [color]="home.rulerCtrl?.isMeasuring ? 'secondary' : 'primary'">
         <ion-icon slot="icon-only" size="small" [src]="'ruler' | getIcon"></ion-icon>
       </ion-button>
 
-      <ion-button size="small" (click)="toggleMapStylesPopover($event)">
+      <ion-button size="small" (click)="toggleMapStylesPopover($event)" appTooltip="Change map style">
         <ion-icon slot="icon-only" size="small" [src]="'map-legend' | getIcon"></ion-icon>
       </ion-button>
 
@@ -24,7 +24,9 @@
 
       <ion-button size="small" *ngFor="let addMarkerTool of ADD_MARKER_TOOLS"
                   (click)="toggleAddMarkerTool(addMarkerTool.type)"
-                  [ngClass]="{'tool-selected': currentAddMarkerToolType === addMarkerTool.type}">
+                  [ngClass]="{'tool-selected': currentAddMarkerToolType === addMarkerTool.type}"
+                  [appTooltip]="{icon: addMarkerTool.icon, text: 'Add a ' + addMarkerTool.label + ' marker'}"
+                  [style.color]="currentAddMarkerToolType !== addMarkerTool.type ? addMarkerTool.color : undefined">
         <ion-icon slot="icon-only" size="small" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
       </ion-button>
 

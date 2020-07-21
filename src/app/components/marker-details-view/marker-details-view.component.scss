@@ -1,11 +1,11 @@
 
 $icon-type-size: 48px;
 
+:host {
+  min-width: 512px;
+}
+
 .icon-type {
   width: $icon-type-size;
   height: $icon-type-size;
-}
-
-.padding-small {
-  padding: 6px;
 }

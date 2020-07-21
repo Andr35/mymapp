@@ -1,0 +1,7 @@
+<div (dblclick)="inputMode = !inputMode">
+
+  <ng-content *ngIf="!inputMode" select="[viewElem]"></ng-content>
+
+  <ng-content *ngIf="inputMode" select="[inputElem]"></ng-content>
+
+</div>

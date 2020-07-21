@@ -14,11 +14,11 @@
 
   <ion-card>
 
-    <ion-card-header class="padding-small">
+    <ion-card-header>
       <ng-container *ngTemplateOutlet="headerTmpl"></ng-container>
     </ion-card-header>
 
-    <ion-card-content class="padding-small">
+    <ion-card-content>
       <ng-container *ngTemplateOutlet="contentTmpl"></ng-container>
     </ion-card-content>
 
@@ -35,20 +35,20 @@
     <div slot="start" class="app-flex ion-align-items-center">
       <ion-img class="icon-type ion-margin-end"
                [src]="('assets/bullets/bullet-' + geojsonFeature?.properties.type) + '.svg'"></ion-img>
-      <h2 class="ion-no-margin">{{ formValue.title || 'Unknown'}}</h2>
+
+
+      <app-input-mode #titleInputMode>
+        <h2 viewElem class="ion-no-margin" appTooltip="Double click to edit">{{ formValue.title || 'Unknown Marker'}}
+        </h2>
+        <ion-input inputElem type="text" [formControl]="formTitleControl" placeholder="Marker Name" required
+                   (keyup.enter)="titleInputMode.setViewMode()" (keydown.Tab)="titleInputMode.setViewMode()">
+        </ion-input>
+      </app-input-mode>
+
     </div>
 
     <ion-buttons slot="end" class="ion-margin-start">
-
-      <ion-button size="small" (click)="onSave()" [disabled]="form.invalid" color="secondary">
-        <ion-icon size="small" slot="icon-only" [src]="'content-save-outline' | getIcon"></ion-icon>
-      </ion-button>
-
-      <ion-button size="small" (dbclick)="onDeleteMarker()">
-        <ion-icon size="small" slot="icon-only" [src]="'map-marker-remove-outline' | getIcon" color="danger"></ion-icon>
-      </ion-button>
-
-      <ion-button size="small" *ngIf="isModal" (click)="onClose()">
+      <ion-button size="small" *ngIf="isModal" (click)="onClose()" appTooltip="Close">
         <ion-icon size="small" slot="icon-only" [src]="'close' | getIcon"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -61,58 +61,106 @@
 
   <ion-grid class="ion-no-padding">
     <ion-row>
-      <ion-col size="12" class="app-flex ion-align-items-center">
+      <ion-col class="app-flex ion-align-items-center">
         <ion-buttons>
-          <ion-button size="small" (click)="onCenterOnMap()">
+          <ion-button size="small" (click)="onCenterOnMap()" appTooltip="Center on map">
             <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
           </ion-button>
         </ion-buttons>
-        <ion-note>{{ geojsonFeature?.geometry.coordinates[1] | number: '1.6-6' }},
-          {{ geojsonFeature?.geometry.coordinates[0] | number: '1.6-6' }}
+        <ion-note>
+          <small>
+            {{ geojsonFeature?.geometry.coordinates[1] | number: '1.6-6' }},
+            {{ geojsonFeature?.geometry.coordinates[0] | number: '1.6-6' }}
+          </small>
         </ion-note>
       </ion-col>
+
+      <ion-col size="auto">
+        <ion-buttons class="ion-margin-start">
+
+          <ion-button size="small" (click)="onSave()" [disabled]="form.invalid" color="secondary" appTooltip="Save">
+            <ion-icon size="small" slot="icon-only" [src]="'content-save-outline' | getIcon"></ion-icon>
+          </ion-button>
+
+          <ion-button size="small" (dbclick)="onDeleteMarker()" appTooltip="Double click to remove marker">
+            <ion-icon size="small" slot="icon-only" [src]="'delete' | getIcon" color="danger"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-col>
+
     </ion-row>
 
-    <ion-row>
+    <ion-row class="ion-margin-top">
       <ion-col size="12">
         <form [formGroup]="form">
+          <ion-grid>
 
-          <ion-item>
-            <ion-label position="inline">Title</ion-label>
-            <!-- <ion-label position="fixed">Title</ion-label> -->
-            <ion-input type="text" formControlName="title" required></ion-input>
-          </ion-item>
+            <ion-row>
+              <ion-col>
+                <small *ngIf="formJourneyDatesControl.controls.length === 0">
+                  <i>Add a new journey using the below button</i>
+                </small>
+              </ion-col>
+            </ion-row>
 
-          <div>
+            <ion-row *ngFor="let journeyControl of formJourneyDatesControl.controls; let i = index">
+              <ion-col>
 
-            <div *ngFor="let journeyControl of formJourneyDatesControl.controls; let i = index">
+                <ion-grid>
 
-              <ion-item>
-                <ion-label position="inline">Date</ion-label>
-                <ion-input type="date" [formControl]="journeyControl" required></ion-input>
+                  <ion-row>
+                    <ion-col>
+                      <app-input-mode #dateInputMode>
 
+                        <span viewElem appTooltip="Double click to edit">
+                          {{ journeyControl.value | date: 'dd MMMM yyyy' }}
+                        </span>
 
-                <ion-buttons slot="end">
-                  <ion-button size="small" (click)="onRemoveJourney(i)">
-                    <ion-icon slot="icon-only" [src]="'map-marker-remove-outline' | getIcon" color="danger"
-                              size="small">
-                    </ion-icon>
+                        <ion-input inputElem type="date" [formControl]="journeyControl" required
+                                   (ionChange)="dateInputMode.setViewMode()"></ion-input>
+                        <!-- <ion-item inputElem>
+                          <ion-label position="inline">Date</ion-label>
+                          <ion-input type="date" [formControl]="journeyControl" required></ion-input>
+                        </ion-item> -->
+
+                      </app-input-mode>
+                    </ion-col>
+
+                    <ion-col size="auto" class="app-flex">
+                      <ion-buttons>
+                        <ion-button *ngIf="formJourneyDatesControl.controls.length > 1" size="small"
+                                    (click)="onRemoveJourney(i)" appTooltip="Remove this day">
+                          <ion-icon slot="icon-only" [src]="'map-marker-remove-outline' | getIcon" color="danger"
+                                    size="small">
+                          </ion-icon>
+                        </ion-button>
+                      </ion-buttons>
+                    </ion-col>
+                  </ion-row>
+
+                  <ion-row>
+                    <ion-col>
+                      TODO Photos
+                    </ion-col>
+                  </ion-row>
+
+                </ion-grid>
+
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="ion-margin-top">
+              <ion-col>
+                <ion-buttons>
+                  <ion-button size="small" (click)="onAddJourney()">
+                    <span>Add new day</span>
+                    <ion-icon size="small" slot="end" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
                   </ion-button>
                 </ion-buttons>
+              </ion-col>
+            </ion-row>
 
-              </ion-item>
-
-            </div>
-
-            <ion-buttons>
-              <ion-button size="small" (click)="onAddJourney()">
-                <ion-icon size="small" slot="icon-only" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
-              </ion-button>
-            </ion-buttons>
-
-          </div>
-
-
+          </ion-grid>
         </form>
       </ion-col>
     </ion-row>

@@ -1,8 +1,9 @@
 import {ChangeDetectionStrategy, Component, Inject, Input, Optional} from '@angular/core';
-import {FormArray, FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HomePage} from '@app/home/home.page';
 import {PointProps} from '@app/models/geojson-props';
 import {ModalController} from '@ionic/angular';
+import {format} from 'date-fns';
 
 
 interface MarkerFormValue {
@@ -19,6 +20,8 @@ type MarkerFormValueGroup = {[key in (keyof MarkerFormValue)]: unknown};
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MarkerDetailsViewComponent {
+
+  private readonly DATE_FMT = 'yyyy-MM-dd';
 
   @Input()
   isModal?: boolean;
@@ -43,6 +46,9 @@ export class MarkerDetailsViewComponent {
   get formJourneyDatesControl(): FormArray {
     return this.form.get('journeyDates') as FormArray;
   }
+  get formTitleControl(): FormControl {
+    return this.form.get('title') as FormControl;
+  }
 
 
   constructor(
@@ -56,10 +62,13 @@ export class MarkerDetailsViewComponent {
       journeyDates: this.fb.array([]),
     } as MarkerFormValueGroup);
 
+    // Add at least a journey
+    this.onAddJourney();
   }
 
 
   private updateFormValue() {
+
     if (this.geojsonFeature) {
 
       this.formJourneyDatesControl.clear();
@@ -71,12 +80,22 @@ export class MarkerDetailsViewComponent {
         title: this.geojsonFeature.properties.title,
         journeyDates: this.geojsonFeature.properties.journeys.map(j => j.date)
       });
+
+      // Add at least a journey
+      if (this.geojsonFeature.properties.journeys.length === 0) {
+        this.onAddJourney();
+      }
+
+
     } else {
       this.form.reset();
       this.form.patchValue({
         title: null,
         journeyDates: null,
       });
+
+      // Add at least a journey
+      this.onAddJourney();
     }
   }
 
@@ -90,7 +109,7 @@ export class MarkerDetailsViewComponent {
   onAddJourney() {
 
     this.formJourneyDatesControl.push(
-      this.fb.control(null, [Validators.required])
+      this.fb.control(format(new Date(), this.DATE_FMT), [Validators.required])
     );
 
   }

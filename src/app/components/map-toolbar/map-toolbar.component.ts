@@ -12,7 +12,9 @@ import {MapStylesListComponent} from '../map-styles-list/map-styles-list.compone
 
 interface AddMarkerTool {
   type: JourneyType;
-  color: 'primary';
+  color: string;
+  label: string;
+  icon: string;
 }
 
 @Component({
@@ -24,10 +26,10 @@ interface AddMarkerTool {
 export class MapToolbarComponent {
 
   readonly ADD_MARKER_TOOLS: AddMarkerTool[] = [
-    {type: 'journey', color: 'primary'},
-    {type: 'mountain', color: 'primary'},
-    {type: 'bike', color: 'primary'},
-    {type: 'ski', color: 'primary'},
+    {type: 'journey', color: '#81d4fa', label: 'Travel', icon: 'wallet-travel'},
+    {type: 'mountain', color: '#a5d6a7', label: 'Mountain', icon: 'image-filter-hdr'},
+    {type: 'bike', color: '#ffcc80', label: 'Bike', icon: 'bike'},
+    {type: 'ski', color: '#bdbdbd', label: 'Skiing', icon: 'ski'},
   ];
 
   constructor(

@@ -1,0 +1,16 @@
+.tootlip {
+  padding: var(--ion-padding, 6px);
+  background-color: var(--ion-color-dark);
+  color: var(--ion-color-dark-contrast);
+  font-size: 12px;
+  border-radius: 4px;
+  opacity: 0.9;
+  margin: 6px;
+
+  max-width: 156px;
+  width: auto;
+}
+
+.icon {
+  margin-right: 6px;
+}
