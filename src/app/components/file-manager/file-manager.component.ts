@@ -18,7 +18,7 @@ export class FileManagerComponent {
   @Select(hasActionsExecuting()) loading$: Observable<boolean>;
 
   @Select(CommonState.file) file$: Observable<File | null>;
-  @Select(CommonState.geojsonData) geojsonData$: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;
+  @Select(CommonState.geojsonData) geojsonData$: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
 
   @ViewChild('fileInput') fileInputElem: ElementRef<HTMLInputElement>;
 

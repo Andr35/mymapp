@@ -5,7 +5,8 @@ import {app} from 'electron';
 const myCapacitorApp = createCapacitorElectronApp({
   mainWindow: {
     windowOptions: {
-      frame: false
+      frame: false,
+      hasShadow: true
     }
   }
 });

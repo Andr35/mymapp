@@ -82,7 +82,7 @@
             <ion-icon size="small" slot="icon-only" [src]="'content-save-outline' | getIcon"></ion-icon>
           </ion-button>
 
-          <ion-button size="small" (dbclick)="onDeleteMarker()" appTooltip="Double click to remove marker">
+          <ion-button size="small" (dblclick)="onDeleteMarker()" appTooltip="Double click to remove marker">
             <ion-icon size="small" slot="icon-only" [src]="'delete' | getIcon" color="danger"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -97,13 +97,13 @@
 
             <ion-row>
               <ion-col>
-                <small *ngIf="formJourneyDatesControl.controls.length === 0">
+                <small *ngIf="formJourneysControl.controls.length === 0">
                   <i>Add a new journey using the below button</i>
                 </small>
               </ion-col>
             </ion-row>
 
-            <ion-row *ngFor="let journeyControl of formJourneyDatesControl.controls; let i = index">
+            <ion-row *ngFor="let journeyControl of formJourneysControl.controls; let i = index">
               <ion-col>
 
                 <ion-grid>
@@ -112,23 +112,19 @@
                     <ion-col>
                       <app-input-mode #dateInputMode>
 
-                        <span viewElem appTooltip="Double click to edit">
-                          {{ journeyControl.value | date: 'dd MMMM yyyy' }}
-                        </span>
+                        <div viewElem class="journey-date-view" appTooltip="Double click to edit">
+                          <span>{{ journeyControl.value.date | date: 'dd MMMM yyyy' }}</span>
+                        </div>
 
-                        <ion-input inputElem type="date" [formControl]="journeyControl" required
+                        <ion-input inputElem type="date" [formControl]="journeyControl.get('date')" required
                                    (ionChange)="dateInputMode.setViewMode()"></ion-input>
-                        <!-- <ion-item inputElem>
-                          <ion-label position="inline">Date</ion-label>
-                          <ion-input type="date" [formControl]="journeyControl" required></ion-input>
-                        </ion-item> -->
 
                       </app-input-mode>
                     </ion-col>
 
                     <ion-col size="auto" class="app-flex">
                       <ion-buttons>
-                        <ion-button *ngIf="formJourneyDatesControl.controls.length > 1" size="small"
+                        <ion-button *ngIf="formJourneysControl.controls.length > 1" size="small"
                                     (click)="onRemoveJourney(i)" appTooltip="Remove this day">
                           <ion-icon slot="icon-only" [src]="'map-marker-remove-outline' | getIcon" color="danger"
                                     size="small">
@@ -140,7 +136,24 @@
 
                   <ion-row>
                     <ion-col>
-                      TODO Photos
+
+                      <div class="app-flex app-flex-wrap">
+
+                        <div class="img-box" *ngFor="let photo of journeyControl.get('photos')?.value">
+                          <ion-img [src]="photo.base64Data" class="img" [alt]="photo.filename"
+                                   [routerLink]="['/img-viewer']" [state]="{'photo': photo}"> </ion-img>
+                        </div>
+
+                        <div class="img-box img-placeholder-box" appUploadFiles
+                             (filesUpload)="onOpenImg($event, journeyControl)">
+                          <ion-img src="assets/others/img-placeholder.svg" class="img-placeholder"></ion-img>
+                          <ion-icon class="img-placeholder-icon" size="large" [src]="'plus' | getIcon" alt="Add Photo">
+                          </ion-icon>
+                        </div>
+                      </div>
+
+
+
                     </ion-col>
                   </ion-row>
 

@@ -8,15 +8,19 @@ export interface PointProps {
   type: JourneyType;
   title: string;
 
-  journeys: {
-    date: string;
-    photos?: {
-      description?: string;
-      filename: string;
-      base64Data: string;
-    }[];
-  }[];
+  journeys?: Journey[];
 
+}
+
+export interface Journey {
+  date: string;
+  photos?: JourneyPhoto[];
+}
+
+export interface JourneyPhoto {
+  filename: string;
+  base64Data: string;
+  description?: string;
 }
 
 // export interface GeometryCollectionProps {

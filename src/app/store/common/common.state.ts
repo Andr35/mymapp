@@ -14,7 +14,7 @@ const {Filesystem} = Plugins;
 export interface CommonStateModel {
 
   file: File | null;
-  geojsonData: GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry> | null;
+  geojsonData: GeoJSON.FeatureCollection<GeoJSON.Geometry> | null;
 
   mapStyles: MapStyle[];
 
@@ -165,6 +165,29 @@ export class CommonState {
       ctx.patchState({
         geojsonData: geojson,
         currentGeojsonFeature: geojson.features[geojson.features.length - 1] as GeoJSON.Feature<GeoJSON.Geometry, PointProps>
+      });
+    }
+
+  }
+
+  @Action(CommonActions.RemoveMarker)
+  removeMarker(ctx: StateContext<CommonStateModel>, {payload: {featureId}}: CommonActions.RemoveMarker) {
+
+    const geojson = ctx.getState().geojsonData;
+
+    if (geojson?.type === 'FeatureCollection') {
+
+      const updatedGeojson: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
+        ...geojson,
+        features: geojson.features.filter(f => f.id !== featureId)
+      };
+
+      const current = ctx.getState().currentGeojsonFeature;
+
+      ctx.patchState({
+        geojsonData: updatedGeojson,
+        // Unset current feature if was removed
+        currentGeojsonFeature: current?.id === featureId ? null : current
       });
     }
 

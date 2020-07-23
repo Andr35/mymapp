@@ -31,7 +31,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   ];
 
   @Select(CommonState.geojsonData)
-  geojsonData$: Observable<GeoJSON.Feature<GeoJSON.Geometry> | GeoJSON.FeatureCollection<GeoJSON.Geometry> | null>;
+  geojsonData$: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry> | null>;
 
   @Select(CommonState.currentGeojsonFeature)
   currentGeojsonFeature$: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;

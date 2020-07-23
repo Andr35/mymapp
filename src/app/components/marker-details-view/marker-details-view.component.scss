@@ -1,11 +1,56 @@
 
 $icon-type-size: 48px;
+$img-height: 128px;
 
 :host {
   min-width: 512px;
+  max-width: 768px;
 }
 
 .icon-type {
   width: $icon-type-size;
   height: $icon-type-size;
+}
+
+.journey-date-view {
+  margin: 12px 0;
+}
+
+.img-box {
+  width: auto;
+  height: $img-height;
+  margin: 6px;
+
+  .img {
+    height: $img-height;
+    width: auto;
+
+    &::part(image) {
+      height: $img-height;
+      width: auto;  
+      border-radius: 4px;
+    }
+  }
+
+}
+
+.img-placeholder-box {
+  position: relative;
+  border: 2px dashed var(--ion-color-medium);
+  border-radius: 12px;
+
+  .img-placeholder {
+    width: auto;
+    height: 100%;
+    opacity: 0.5;
+  }
+
+  .img-placeholder-icon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
 }

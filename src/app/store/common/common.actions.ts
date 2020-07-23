@@ -36,6 +36,14 @@ export namespace CommonActions {
     }
   }
 
+  export class RemoveMarker extends StoreAction {
+    static readonly type = `[Common] Remove marker`;
+
+    constructor(public payload: {featureId: string | number}) {
+      super();
+    }
+  }
+
 
   export class AppError extends ErrorAction {
     static readonly type = `[Common] Error`;

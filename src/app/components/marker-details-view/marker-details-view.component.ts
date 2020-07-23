@@ -1,17 +1,27 @@
-import {ChangeDetectionStrategy, Component, Inject, Input, Optional} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, Optional} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {HomePage} from '@app/home/home.page';
-import {PointProps} from '@app/models/geojson-props';
+import {Journey, JourneyPhoto, PointProps} from '@app/models/geojson-props';
+import {CommonActions} from '@app/store/common/common.actions';
 import {ModalController} from '@ionic/angular';
+import {Store} from '@ngxs/store';
 import {format} from 'date-fns';
 
 
 interface MarkerFormValue {
   title: string | null;
-  journeyDates: Date[] | null;
+  journeys: Journey[] | null;
 }
 
 type MarkerFormValueGroup = {[key in (keyof MarkerFormValue)]: unknown};
+
+interface PhotoInfo {
+  filename: string;
+  base64Data: string;
+  width: number;
+  height: number;
+}
 
 @Component({
   selector: 'app-marker-details-view',
@@ -22,6 +32,7 @@ type MarkerFormValueGroup = {[key in (keyof MarkerFormValue)]: unknown};
 export class MarkerDetailsViewComponent {
 
   private readonly DATE_FMT = 'yyyy-MM-dd';
+  private readonly DEFAULT_IMAGE_HEIGHT = 768;
 
   @Input()
   isModal?: boolean;
@@ -43,8 +54,8 @@ export class MarkerDetailsViewComponent {
     return this.form.value;
   }
 
-  get formJourneyDatesControl(): FormArray {
-    return this.form.get('journeyDates') as FormArray;
+  get formJourneysControl(): FormArray {
+    return this.form.get('journeys') as FormArray;
   }
   get formTitleControl(): FormControl {
     return this.form.get('title') as FormControl;
@@ -54,12 +65,15 @@ export class MarkerDetailsViewComponent {
   constructor(
     @Optional() @Inject(HomePage) private home: HomePage | undefined,
     private fb: FormBuilder,
+    private cd: ChangeDetectorRef,
+    private store: Store,
     private modalCtrl: ModalController,
+    @Inject(DOCUMENT) private document: Document,
   ) {
 
     this.form = this.fb.group({
       title: [null, Validators.required],
-      journeyDates: this.fb.array([]),
+      journeys: this.fb.array([]),
     } as MarkerFormValueGroup);
 
     // Add at least a journey
@@ -71,18 +85,21 @@ export class MarkerDetailsViewComponent {
 
     if (this.geojsonFeature) {
 
-      this.formJourneyDatesControl.clear();
-      this.geojsonFeature.properties.journeys.forEach(() => {
-        this.formJourneyDatesControl.push(this.fb.control(null));
+      this.formJourneysControl.clear();
+      this.geojsonFeature.properties.journeys?.forEach(() => {
+        this.formJourneysControl.push(this.fb.group({
+          date: this.fb.control(null, [Validators.required]),
+          photos: this.fb.array([])
+        }));
       });
 
       this.form.patchValue({
         title: this.geojsonFeature.properties.title,
-        journeyDates: this.geojsonFeature.properties.journeys.map(j => j.date)
-      });
+        journeys: this.geojsonFeature.properties.journeys?.map(j => ({...j, date: format(new Date(j.date), this.DATE_FMT)})) ?? []
+      } as MarkerFormValueGroup);
 
       // Add at least a journey
-      if (this.geojsonFeature.properties.journeys.length === 0) {
+      if ((this.geojsonFeature.properties.journeys?.length ?? 0) === 0) {
         this.onAddJourney();
       }
 
@@ -91,8 +108,8 @@ export class MarkerDetailsViewComponent {
       this.form.reset();
       this.form.patchValue({
         title: null,
-        journeyDates: null,
-      });
+        journeys: null,
+      } as MarkerFormValueGroup);
 
       // Add at least a journey
       this.onAddJourney();
@@ -108,14 +125,17 @@ export class MarkerDetailsViewComponent {
 
   onAddJourney() {
 
-    this.formJourneyDatesControl.push(
-      this.fb.control(format(new Date(), this.DATE_FMT), [Validators.required])
+    this.formJourneysControl.push(
+      this.fb.group({
+        date: this.fb.control(format(new Date(), this.DATE_FMT), [Validators.required]),
+        photos: this.fb.array([])
+      })
     );
 
   }
 
   onRemoveJourney(index: number) {
-    this.formJourneyDatesControl.removeAt(index);
+    this.formJourneysControl.removeAt(index);
   }
 
   onSave() {
@@ -123,13 +143,82 @@ export class MarkerDetailsViewComponent {
   }
 
   onDeleteMarker() {
-    // TODO impl
+    const featureId = this.geojsonFeature?.id;
+    if (featureId) {
+      this.store.dispatch(new CommonActions.RemoveMarker({featureId}));
+    }
+  }
+
+  async onOpenImg(files: FileList, journeyControl: FormGroup) {
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files.item(i);
+      if (file?.type.startsWith('image')) {
+
+        const photoInfo = await this.preparePhoto(file);
+
+        this.addPhoto(journeyControl, {
+          filename: file.name,
+          base64Data: photoInfo.base64Data,
+        });
+
+      }
+    }
+
   }
 
   onClose() {
     if (this.isModal) {
       this.modalCtrl.dismiss();
     }
+  }
+
+
+  private addPhoto(journeyControl: FormGroup, photoData: JourneyPhoto) {
+
+    (journeyControl.get('photos') as FormArray).push(
+      this.fb.control(photoData)
+    );
+
+    this.cd.markForCheck();
+  }
+
+  private async preparePhoto(file: File): Promise<PhotoInfo> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = event => {
+        const imgElem = new Image();
+
+        imgElem.onload = () => {
+          const canvas = this.document.createElement('canvas');
+          // tslint:disable-next-line:no-non-null-assertion
+          const ctx = canvas.getContext('2d')!;
+          // > smooth == < sharpen
+          // ctx.imageSmoothingEnabled = true;
+          // ctx.imageSmoothingQuality = 'high';
+
+          // Resize
+          canvas.height = this.DEFAULT_IMAGE_HEIGHT;
+          canvas.width = (this.DEFAULT_IMAGE_HEIGHT * imgElem.width) / imgElem.height;
+
+          ctx.drawImage(imgElem, 0, 0, imgElem.width, imgElem.height, 0, 0, canvas.width, canvas.height);
+
+          const base64Data = ctx.canvas.toDataURL('image/jpeg');
+          resolve({
+            base64Data,
+            width: canvas.width,
+            height: canvas.height,
+            filename: file.name,
+          });
+        };
+        imgElem.onerror = err => reject(err);
+        imgElem.src = event.target?.result as string ?? '';
+      };
+      reader.onerror = err => reject(err);
+
+      reader.readAsDataURL(file);
+    });
   }
 
 }
