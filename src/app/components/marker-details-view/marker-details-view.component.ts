@@ -86,11 +86,8 @@ export class MarkerDetailsViewComponent {
     if (this.geojsonFeature) {
 
       this.formJourneysControl.clear();
-      this.geojsonFeature.properties.journeys?.forEach(() => {
-        this.formJourneysControl.push(this.fb.group({
-          date: this.fb.control(null, [Validators.required]),
-          photos: this.fb.array([])
-        }));
+      this.geojsonFeature.properties.journeys?.forEach(journey => {
+        this.onAddJourney(journey);
       });
 
       this.form.patchValue({
@@ -123,12 +120,12 @@ export class MarkerDetailsViewComponent {
     }
   }
 
-  onAddJourney() {
+  onAddJourney(journey?: Journey) {
 
     this.formJourneysControl.push(
       this.fb.group({
-        date: this.fb.control(format(new Date(), this.DATE_FMT), [Validators.required]),
-        photos: this.fb.array([])
+        date: this.fb.control(journey?.date ?? format(new Date(), this.DATE_FMT), [Validators.required]),
+        photos: this.fb.array(journey?.photos?.map(photo => this.fb.control(photo)) ?? [])
       })
     );
 
@@ -139,7 +136,25 @@ export class MarkerDetailsViewComponent {
   }
 
   onSave() {
-    // TODO impl
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    const formValue: MarkerFormValue = this.form.value;
+
+    const updatedFeatureProps: PointProps = {
+      id: this.geojsonFeature?.properties.id ?? '',
+      type: this.geojsonFeature?.properties.type ?? 'unknown',
+      title: formValue.title ?? 'Unknown',
+      journeys: formValue.journeys ?? []
+    };
+
+    this.store.dispatch(new CommonActions.UpdateMarker({
+      featureId: updatedFeatureProps.id,
+      props: updatedFeatureProps
+    }));
+
   }
 
   onDeleteMarker() {

@@ -28,6 +28,14 @@ export namespace CommonActions {
     }
   }
 
+  export class UpdateMarker extends StoreAction {
+    static readonly type = `[Common] Update marker`;
+
+    constructor(public payload: {featureId: string; coordinates?: GeoJSON.Position, props?: PointProps}) {
+      super();
+    }
+  }
+
   export class SetCurrentGeojsonFeature extends StoreAction {
     static readonly type = `[Common] Set current geojson feature`;
 

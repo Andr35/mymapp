@@ -14,7 +14,7 @@ const {Filesystem} = Plugins;
 export interface CommonStateModel {
 
   file: File | null;
-  geojsonData: GeoJSON.FeatureCollection<GeoJSON.Geometry> | null;
+  geojsonData: GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null;
 
   mapStyles: MapStyle[];
 
@@ -160,11 +160,51 @@ export class CommonState {
         properties: props
       };
 
-      geojson.features = [...geojson.features, geojsonPoint];
+      geojson.features = [geojsonPoint, ...geojson.features];
 
       ctx.patchState({
         geojsonData: geojson,
         currentGeojsonFeature: geojson.features[geojson.features.length - 1] as GeoJSON.Feature<GeoJSON.Geometry, PointProps>
+      });
+    }
+
+  }
+
+  @Action(CommonActions.UpdateMarker)
+  updateMarker(ctx: StateContext<CommonStateModel>, {payload: {featureId, coordinates, props}}: CommonActions.UpdateMarker) {
+
+    // If geojson does not exist -> no file loaded -> use default
+    const geojson = {...(ctx.getState().geojsonData ?? DEFAULT_GEOJSON_DATA)};
+
+    if (geojson.type === 'FeatureCollection') {
+
+      // Search for marker to update
+      geojson.features = geojson.features.map(feature => {
+
+        if (feature.id !== featureId) {
+          return feature;
+        }
+
+        // Found marker to update -> update it!
+        return {
+          ...feature,
+          properties: props ?? feature.properties,
+          geometry: coordinates ? {type: 'Point', coordinates} : feature.geometry,
+        };
+
+
+      });
+
+      let currentGeojsonFeature = ctx.getState().currentGeojsonFeature;
+
+      if (currentGeojsonFeature?.id === featureId) {
+        // Update data in store about current selected geojecon feature
+        currentGeojsonFeature = geojson.features.find(f => f.id === featureId) ?? null;
+      }
+
+      ctx.patchState({
+        geojsonData: geojson,
+        currentGeojsonFeature
       });
     }
 
@@ -177,7 +217,7 @@ export class CommonState {
 
     if (geojson?.type === 'FeatureCollection') {
 
-      const updatedGeojson: GeoJSON.FeatureCollection<GeoJSON.Geometry> = {
+      const updatedGeojson: GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> = {
         ...geojson,
         features: geojson.features.filter(f => f.id !== featureId)
       };
