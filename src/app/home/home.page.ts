@@ -8,7 +8,7 @@ import {Select, Store} from '@ngxs/store';
 import {GeoJSONSource, GeolocateControl, Map} from 'mapbox-gl';
 import RulerControl from 'mapbox-gl-controls/lib/ruler';
 import StylesControl from 'mapbox-gl-controls/lib/styles';
-import {Observable, Subscription} from 'rxjs';
+import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -56,6 +56,8 @@ export class HomePage implements AfterViewInit, OnDestroy {
    * or something else which is not a generic point on the map is clicked.
    */
   private preventMapClick = false;
+
+  readonly mapReady$ = new BehaviorSubject(false);
 
   private readonly subscr = new Subscription();
 
@@ -136,6 +138,9 @@ export class HomePage implements AfterViewInit, OnDestroy {
           }
         })
       );
+
+      // Notify to interested components
+      this.mapReady$.next(true);
 
     });
 

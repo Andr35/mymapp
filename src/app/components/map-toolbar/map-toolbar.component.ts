@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {HomePage} from '@app/home/home.page';
 import {JourneyType} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
@@ -6,6 +6,8 @@ import {CommonState} from '@app/store/common/common.state';
 import {PopoverController} from '@ionic/angular';
 import {Store} from '@ngxs/store';
 import {MapMouseEvent, MapTouchEvent} from 'mapbox-gl';
+import {Subscription} from 'rxjs';
+import {filter, first} from 'rxjs/operators';
 import {v4 as uuidv4} from 'uuid';
 import {MapStylesListComponent} from '../map-styles-list/map-styles-list.component';
 
@@ -23,7 +25,7 @@ interface AddMarkerTool {
   styleUrls: ['./map-toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MapToolbarComponent {
+export class MapToolbarComponent implements OnInit, OnDestroy {
 
   readonly ADD_MARKER_TOOLS: AddMarkerTool[] = [
     {type: 'journey', color: '#81d4fa', label: 'Travel', icon: 'wallet-travel'},
@@ -32,15 +34,21 @@ export class MapToolbarComponent {
     {type: 'ski', color: '#bdbdbd', label: 'Skiing', icon: 'ski'},
   ];
 
-  constructor(
-    public home: HomePage,
-    private popoverCtrl: PopoverController,
-    private store: Store,
-    private renderer: Renderer2,
-    private cd: ChangeDetectorRef,
-  ) {}
+  /**
+   * Compass icon is rotated of 45deg
+   */
+  readonly BEARING_ICON_COMPENSATION = -45;
+
+  /**
+   * Map compass position.
+   */
+  bearing = 0;
 
   currentAddMarkerToolType: JourneyType | null = null;
+
+  searchbarVisible = false;
+
+  private readonly subscr = new Subscription();
 
   private readonly addMarkerCallback: (ev: MapMouseEvent | MapTouchEvent) => void = (ev) => {
 
@@ -64,6 +72,29 @@ export class MapToolbarComponent {
 
   }
 
+  private readonly pitchCallback: (ev: MapMouseEvent | MapTouchEvent) => void = (ev) => {
+    this.bearing = this.home.map.getBearing();
+    this.cd.markForCheck();
+  }
+
+  constructor(
+    public home: HomePage,
+    private popoverCtrl: PopoverController,
+    private store: Store,
+    private renderer: Renderer2,
+    private cd: ChangeDetectorRef,
+  ) {}
+
+
+  ngOnInit() {
+    this.subscr.add(
+      this.home.mapReady$.pipe(filter(r => r), first()).subscribe(ready => {
+        if (ready) {
+          this.home.map.on('pitch', this.pitchCallback);
+        }
+      })
+    );
+  }
 
   async toggleMapStylesPopover(event: Event) {
 
@@ -95,6 +126,16 @@ export class MapToolbarComponent {
     }
 
     this.cd.markForCheck();
+  }
+
+  onResetBearing() {
+    this.home.map.setBearing(0);
+    this.bearing = 0;
+  }
+
+  ngOnDestroy() {
+    this.subscr.unsubscribe();
+    this.home.map.off('pitch', this.pitchCallback);
   }
 
 }

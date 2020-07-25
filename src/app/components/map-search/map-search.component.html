@@ -1,0 +1,18 @@
+<ion-card class="container">
+  <ion-card-content>
+
+    <ion-searchbar (ionChange)="onSearch($event.detail.value)" [debounce]="500"></ion-searchbar>
+
+    <ion-list>
+      <ion-item button *ngFor="let result of results" detail="false">
+        <ion-icon slot="start" [src]="'map-marker-outline' | getIcon" color="medium"></ion-icon>
+
+        <div class="c3-app-flex-column">
+          <ion-label>{{ result.text }}</ion-label>
+          <ion-note><small>{{ result.place_name }}</small></ion-note>
+        </div>
+      </ion-item>
+    </ion-list>
+
+  </ion-card-content>
+</ion-card>

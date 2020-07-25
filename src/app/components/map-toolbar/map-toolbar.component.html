@@ -1,36 +1,60 @@
-<ion-card>
-  <ion-card-content class="toolbar">
+<ion-grid class="ion-no-padding">
+  <ion-row>
 
-    <ion-buttons class="app-flex-column">
+    <ion-col size="auto">
+      <ion-card>
+        <ion-card-content class="toolbar">
 
-      <ion-button size="small" (click)="home.onToggleGeolocation()" appTooltip="Show current position">
-        <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
-      </ion-button>
+          <ion-buttons class="app-flex-column">
 
-      <div class="divider">
-      </div>
+            <ion-button size="small" (click)="home.onToggleGeolocation()" appTooltip="Show current position">
+              <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
+            </ion-button>
 
-      <ion-button size="small" (click)="home.onToggleRuler()" appTooltip="Measure distances"
-                  [color]="home.rulerCtrl?.isMeasuring ? 'secondary' : 'primary'">
-        <ion-icon slot="icon-only" size="small" [src]="'ruler' | getIcon"></ion-icon>
-      </ion-button>
+            <div class="divider">
+            </div>
 
-      <ion-button size="small" (click)="toggleMapStylesPopover($event)" appTooltip="Change map style">
-        <ion-icon slot="icon-only" size="small" [src]="'map-legend' | getIcon"></ion-icon>
-      </ion-button>
+            <ion-button size="small" (click)="searchbarVisible = !searchbarVisible" appTooltip="Search on map"
+                        [color]="searchbarVisible ? 'secondary' : 'primary'">
+              <ion-icon slot="icon-only" size="small" [src]="'map-search-outline' | getIcon"></ion-icon>
+            </ion-button>
 
-      <div class="divider">
-      </div>
+            <ion-button size="small" (click)="home.onToggleRuler()" appTooltip="Measure distances"
+                        [color]="home.rulerCtrl?.isMeasuring ? 'secondary' : 'primary'">
+              <ion-icon slot="icon-only" size="small" [src]="'ruler' | getIcon"></ion-icon>
+            </ion-button>
 
-      <ion-button size="small" *ngFor="let addMarkerTool of ADD_MARKER_TOOLS"
-                  (click)="toggleAddMarkerTool(addMarkerTool.type)"
-                  [ngClass]="{'tool-selected': currentAddMarkerToolType === addMarkerTool.type}"
-                  [appTooltip]="{icon: addMarkerTool.icon, text: 'Add a ' + addMarkerTool.label + ' marker'}"
-                  [style.color]="currentAddMarkerToolType !== addMarkerTool.type ? addMarkerTool.color : undefined">
-        <ion-icon slot="icon-only" size="small" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
-      </ion-button>
+            <ion-button size="small" (click)="onResetBearing()" appTooltip="Reset map rotation" color="primary">
+              <ion-icon slot="icon-only" size="small" [src]="'compass-outline' | getIcon"
+                        [ngStyle]="{'rotate': (360 - bearing + BEARING_ICON_COMPENSATION) + 'deg'}">
+              </ion-icon>
+            </ion-button>
 
-    </ion-buttons>
+            <ion-button size="small" (click)="toggleMapStylesPopover($event)" appTooltip="Change map style">
+              <ion-icon slot="icon-only" size="small" [src]="'map-legend' | getIcon"></ion-icon>
+            </ion-button>
 
-  </ion-card-content>
-</ion-card>
+            <div class="divider">
+            </div>
+
+            <ion-button size="small" *ngFor="let addMarkerTool of ADD_MARKER_TOOLS"
+                        (click)="toggleAddMarkerTool(addMarkerTool.type)"
+                        [ngClass]="{'tool-selected': currentAddMarkerToolType === addMarkerTool.type}"
+                        [appTooltip]="{icon: addMarkerTool.icon, text: 'Add a ' + addMarkerTool.label + ' marker'}"
+                        [style.color]="currentAddMarkerToolType !== addMarkerTool.type ? addMarkerTool.color : undefined">
+              <ion-icon slot="icon-only" size="small" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
+            </ion-button>
+
+          </ion-buttons>
+
+        </ion-card-content>
+      </ion-card>
+
+    </ion-col>
+
+    <ion-col>
+      <app-map-search class="map-search" *ngIf="searchbarVisible"></app-map-search>
+    </ion-col>
+
+  </ion-row>
+</ion-grid>
