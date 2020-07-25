@@ -139,9 +139,11 @@
 
                       <div class="app-flex app-flex-wrap">
 
-                        <div class="img-box" *ngFor="let photo of journeyControl.get('photos')?.value">
+                        <div class="img-box" *ngFor="let photo of journeyControl.get('photos')?.value; let i = index">
                           <ion-img [src]="photo.base64Data" class="img" [alt]="photo.filename"
-                                   [routerLink]="['/img-viewer']" [state]="{'photo': photo}"> </ion-img>
+                                   [routerLink]="['/img-viewer']"
+                                   [state]="{'photos': journeyControl.get('photos')?.value, 'photoIndex': i}">
+                          </ion-img>
                         </div>
 
                         <div class="img-box img-placeholder-box" appUploadFiles
