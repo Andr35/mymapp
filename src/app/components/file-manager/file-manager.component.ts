@@ -20,7 +20,8 @@ export class FileManagerComponent {
   @Select(CommonState.file) file$: Observable<File | null>;
   @Select(CommonState.geojsonData) geojsonData$: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
 
-  @ViewChild('fileInput') fileInputElem: ElementRef<HTMLInputElement>;
+  @ViewChild('fileInput')
+  private readonly fileInputElem: ElementRef<HTMLInputElement>;
 
   /**
    * Flag indicating the save operation status

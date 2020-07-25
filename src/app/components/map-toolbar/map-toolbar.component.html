@@ -7,7 +7,7 @@
 
           <ion-buttons class="app-flex-column">
 
-            <ion-button size="small" (click)="home.onToggleGeolocation()" appTooltip="Show current position">
+            <ion-button size="small" (click)="mapService.toggleGeolocation()" appTooltip="Show current position">
               <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
             </ion-button>
 
@@ -19,8 +19,8 @@
               <ion-icon slot="icon-only" size="small" [src]="'map-search-outline' | getIcon"></ion-icon>
             </ion-button>
 
-            <ion-button size="small" (click)="home.onToggleRuler()" appTooltip="Measure distances"
-                        [color]="home.rulerCtrl?.isMeasuring ? 'secondary' : 'primary'">
+            <ion-button size="small" (click)="mapService.toggleRuler()" appTooltip="Measure distances"
+                        [color]="mapService.rulerCtrl?.isMeasuring ? 'secondary' : 'primary'">
               <ion-icon slot="icon-only" size="small" [src]="'ruler' | getIcon"></ion-icon>
             </ion-button>
 

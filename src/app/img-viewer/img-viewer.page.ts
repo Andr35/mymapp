@@ -13,7 +13,7 @@ import {IonSlides} from '@ionic/angular';
 export class ImgViewerPage implements OnInit, AfterViewInit {
 
   @ViewChild(IonSlides)
-  private slides: IonSlides;
+  private readonly slides: IonSlides;
 
 
   photos?: JourneyPhoto[];

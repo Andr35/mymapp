@@ -1,8 +1,8 @@
 import {DOCUMENT} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input, Optional} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
-import {HomePage} from '@app/home/home.page';
 import {Journey, JourneyPhoto, PointProps} from '@app/models/geojson-props';
+import {MapService} from '@app/service/map.service';
 import {CommonActions} from '@app/store/common/common.actions';
 import {ModalController} from '@ionic/angular';
 import {Store} from '@ngxs/store';
@@ -63,8 +63,8 @@ export class MarkerDetailsViewComponent {
 
 
   constructor(
-    @Optional() @Inject(HomePage) private home: HomePage | undefined,
     private fb: FormBuilder,
+    private mapService: MapService,
     private cd: ChangeDetectorRef,
     private store: Store,
     private modalCtrl: ModalController,
@@ -116,7 +116,7 @@ export class MarkerDetailsViewComponent {
 
   onCenterOnMap() {
     if (this.geojsonFeature) {
-      this.home?.centerMapOn(this.geojsonFeature);
+      this.mapService.centerMapOn(this.geojsonFeature.geometry);
     }
   }
 

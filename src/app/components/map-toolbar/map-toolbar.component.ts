@@ -1,6 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
-import {HomePage} from '@app/home/home.page';
 import {JourneyType} from '@app/models/geojson-props';
+import {MapService} from '@app/service/map.service';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {PopoverController} from '@ionic/angular';
@@ -73,12 +73,12 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
   }
 
   private readonly pitchCallback: (ev: MapMouseEvent | MapTouchEvent) => void = (ev) => {
-    this.bearing = this.home.map.getBearing();
+    this.bearing = this.mapService.map.getBearing();
     this.cd.markForCheck();
   }
 
   constructor(
-    public home: HomePage,
+    public mapService: MapService,
     private popoverCtrl: PopoverController,
     private store: Store,
     private renderer: Renderer2,
@@ -88,9 +88,9 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscr.add(
-      this.home.mapReady$.pipe(filter(r => r), first()).subscribe(ready => {
+      this.mapService.mapReady$.pipe(filter(r => r), first()).subscribe(ready => {
         if (ready) {
-          this.home.map.on('pitch', this.pitchCallback);
+          this.mapService.map.on('pitch', this.pitchCallback);
         }
       })
     );
@@ -110,7 +110,7 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
 
     const {data} = await popover.onWillDismiss();
     if (data) {
-      this.home.onChangeMapStyle(data);
+      this.mapService.changeMapStyle(data);
     }
   }
 
@@ -118,24 +118,24 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
     this.currentAddMarkerToolType = markerType;
 
     if (this.currentAddMarkerToolType) {
-      this.home.map.on('click', this.addMarkerCallback);
-      this.renderer.addClass(this.home.map.getCanvasContainer(), 'app-map-clickable');
+      this.mapService.map.on('click', this.addMarkerCallback);
+      this.renderer.addClass(this.mapService.map.getCanvasContainer(), 'app-map-clickable');
     } else {
-      this.home.map.off('click', this.addMarkerCallback);
-      this.renderer.removeClass(this.home.map.getCanvasContainer(), 'app-map-clickable');
+      this.mapService.map.off('click', this.addMarkerCallback);
+      this.renderer.removeClass(this.mapService.map.getCanvasContainer(), 'app-map-clickable');
     }
 
     this.cd.markForCheck();
   }
 
   onResetBearing() {
-    this.home.map.setBearing(0);
+    this.mapService.map.setBearing(0);
     this.bearing = 0;
   }
 
   ngOnDestroy() {
     this.subscr.unsubscribe();
-    this.home.map.off('pitch', this.pitchCallback);
+    this.mapService.map.off('pitch', this.pitchCallback);
   }
 
 }

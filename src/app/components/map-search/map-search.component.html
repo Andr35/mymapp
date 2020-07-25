@@ -4,7 +4,7 @@
     <ion-searchbar (ionChange)="onSearch($event.detail.value)" [debounce]="500"></ion-searchbar>
 
     <ion-list>
-      <ion-item button *ngFor="let result of results" detail="false">
+      <ion-item button *ngFor="let result of results" detail="false" (click)="onResultSelect(result)">
         <ion-icon slot="start" [src]="'map-marker-outline' | getIcon" color="medium"></ion-icon>
 
         <div class="c3-app-flex-column">
