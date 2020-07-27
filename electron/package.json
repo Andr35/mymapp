@@ -18,11 +18,11 @@
     "electron:build-linux": "npm run build && electron-builder build --linux"
   },
   "dependencies": {
-    "@capacitor-community/electron-core": "^1.0.2"
+    "@capacitor-community/electron-core": "^1.1.2"
   },
   "devDependencies": {
     "electron": "^9.1.1",
-    "electron-builder": "~22.7.0",
+    "electron-builder": "^22.8.0",
     "typescript": "~3.9.5"
   },
   "keywords": [

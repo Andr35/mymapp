@@ -1,9 +1,21 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
-import {PointProps} from '@app/models/geojson-props';
+import {Journey, PointProps} from '@app/models/geojson-props';
 import {MapService} from '@app/service/map.service';
+import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
-import {Select} from '@ngxs/store';
+import {Select, Store} from '@ngxs/store';
+import {format, isSameDay, parse} from 'date-fns';
+import * as EXIF from 'exif-js';
 import {Observable, Subscription} from 'rxjs';
+import {v4 as uuidv4} from 'uuid';
+
+
+interface PhotoData {
+  file: File;
+  shotDate: Date;
+  lat: number | null;
+  long: number | null;
+}
 
 @Component({
   selector: 'app-home',
@@ -31,6 +43,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   private readonly subscr = new Subscription();
 
   constructor(
+    private store: Store,
     private mapService: MapService,
     // private modalCtrl: ModalController,
   ) {}
@@ -41,7 +54,96 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   }
 
-  // Utils ////////////////////////////////////////////////////////////////////////////////////////
+  // Callbacks ////////////////////////////////////////////////////////////////////////////////////
+
+  async onReadImages(files: FileList) {
+
+    const photos: PhotoData[] = [];
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files.item(i);
+
+      if (file?.type.startsWith('image')) {
+        photos.push(await this.extractPhotoData(file));
+      }
+
+    }
+
+    if (photos.length > 0) {
+
+      const journeys = photos.reduce<Journey[]>((a, b) => {
+        let bucket = a.find(j => isSameDay(new Date(j.date), b.shotDate));
+
+        if (bucket) {
+          // bucket.photos = [...(bucket.photos ?? []) , {
+          //   // TODO complete
+          // }];
+        } else {
+          bucket = {
+            date: format(b.shotDate, 'yyyy-MM-dd'),
+            photos: [] // TODO complete
+          } as Journey;
+          a.push(bucket);
+        }
+
+        return a;
+      }, []);
+
+      this.store.dispatch(new CommonActions.AddMarker({
+        coordinates: [photos[0].long ?? 11, photos[0].lat ?? 46],
+        props: {
+          id: uuidv4(),
+          type: 'journey',
+          title: '',
+          journeys
+        }
+      }));
+
+    }
+
+  }
+
+
+  private extractPhotoData(file: File): Promise<PhotoData> {
+    return new Promise<PhotoData>((resolve, reject) => {
+
+      const reader = new FileReader();
+
+      reader.onload = event => {
+        const img = new Image();
+        img.onload = () => {
+          EXIF.getData(img as any, () => {
+            const shotDate: string = EXIF.getTag(img, 'DateTimeOriginal'); // yyyy:MM:dd HH:mm:ss
+            const gpsLatRef: 'N' | 'S' = EXIF.getTag(img, 'GPSLatitudeRef');
+            const gpsLongRef: 'E' | 'W' = EXIF.getTag(img, 'GPSLongitudeRef');
+            const gpsLat: [number, number, number] = EXIF.getTag(img, 'GPSLatitude');
+            const gpsLong: [number, number, number] = EXIF.getTag(img, 'GPSLongitude');
+
+            resolve({
+              file,
+              shotDate: parse(shotDate, 'yyyy:MM:dd HH:mm:ss', new Date()),
+              lat: this.convLatLong(gpsLat, gpsLatRef),
+              long: this.convLatLong(gpsLong, gpsLongRef),
+            });
+
+          });
+        };
+        img.onerror = err => reject(err);
+        img.src = event.target?.result as string ?? '';
+      };
+      reader.onerror = err => reject(err);
+
+      reader.readAsDataURL(file);
+
+
+    });
+  }
+
+  private convLatLong(value: [number, number, number], ref: 'N' | 'S' | 'E' | 'W'): number {
+    const stdValue = value[0] + (value[1] / 60) + (value[2] / 3600);
+    return (ref === 'N' || ref === 'E') ? stdValue : -stdValue;
+  }
+
 
   ngOnDestroy() {
     this.subscr.unsubscribe();

@@ -124,6 +124,7 @@ export class MapService {
       // Listen for current geojson feature
       this.subscr.add(
         this.currentGeojsonFeature$.subscribe(async geojsonFeature => {
+
           if (geojsonFeature) {
             // Center map on the feature
             this.centerMapOn(geojsonFeature.geometry);
@@ -260,13 +261,13 @@ export class MapService {
 
   // Map APIs /////////////////////////////////////////////////////////////////////////////////////
 
-  centerMapOn(geometry: GeoJSON.Geometry, zoom?: number) {
+  centerMapOn(geometry: GeoJSON.Geometry, zoom: number = this.map.getZoom()) {
 
     switch (geometry.type) {
       case 'Point':
         this.map.flyTo({
           center: geometry.coordinates as [number, number],
-          zoom
+          zoom // Attention: Throws subtle error with undefined
         });
         break;
 
