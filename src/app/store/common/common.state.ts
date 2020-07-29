@@ -171,7 +171,7 @@ export class CommonState {
   }
 
   @Action(CommonActions.UpdateMarker)
-  updateMarker(ctx: StateContext<CommonStateModel>, {payload: {featureId, coordinates, props}}: CommonActions.UpdateMarker) {
+  updateMarker(ctx: StateContext<CommonStateModel>, {payload: {featureId, coordinates, props, markerType}}: CommonActions.UpdateMarker) {
 
     // If geojson does not exist -> no file loaded -> use default
     const geojson = {...(ctx.getState().geojsonData ?? DEFAULT_GEOJSON_DATA)};
@@ -185,10 +185,16 @@ export class CommonState {
           return feature;
         }
 
+        let updatedProps = props ?? feature.properties;
+
+        if (markerType) {
+          updatedProps = {...updatedProps, type: markerType};
+        }
+
         // Found marker to update -> update it!
         return {
           ...feature,
-          properties: props ?? feature.properties,
+          properties: updatedProps,
           geometry: coordinates ? {type: 'Point', coordinates} : feature.geometry,
         };
 

@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Renderer2} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Journey, JourneyPhoto, PointProps} from '@app/models/geojson-props';
+import {ADD_MARKER_TOOLS} from '@app/models/marker-types';
 import {MapService} from '@app/service/map.service';
 import {MarkerService} from '@app/service/marker.service';
 import {CommonActions} from '@app/store/common/common.actions';
@@ -41,6 +42,10 @@ export class MarkerDetailsViewComponent {
     this.updateFormValue();
   }
 
+  get geojsonId(): string {
+    return this.geojsonFeature?.properties.id ?? '';
+  }
+
   readonly form: FormGroup;
 
   get formValue(): MarkerFormValue {
@@ -64,7 +69,7 @@ export class MarkerDetailsViewComponent {
     const newCoords = ev.lngLat.toArray();
 
     this.store.dispatch(new CommonActions.UpdateMarker({
-      featureId: this.geojsonFeature?.properties.id ?? '',
+      featureId: this.geojsonId,
       coordinates: newCoords
     }));
 
@@ -153,7 +158,7 @@ export class MarkerDetailsViewComponent {
     const formValue: MarkerFormValue = this.form.value;
 
     const updatedFeatureProps: PointProps = {
-      id: this.geojsonFeature?.properties.id ?? '',
+      id: this.geojsonId,
       type: this.geojsonFeature?.properties.type ?? 'unknown',
       title: formValue.title ?? 'Unknown',
       journeys: formValue.journeys ?? []
@@ -188,6 +193,20 @@ export class MarkerDetailsViewComponent {
 
       }
     }
+
+  }
+
+  onChangeMarkerType() {
+
+    const currType = this.geojsonFeature?.properties.type ?? 'unknown';
+    const index = ADD_MARKER_TOOLS.findIndex(t => t.type === currType);
+
+    const nextType = ADD_MARKER_TOOLS[(index + 1) % ADD_MARKER_TOOLS.length].type;
+
+    this.store.dispatch(new CommonActions.UpdateMarker({
+      featureId: this.geojsonId,
+      markerType: nextType,
+    }));
 
   }
 

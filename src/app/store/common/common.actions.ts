@@ -1,6 +1,6 @@
 
 import {ErrorAction} from '@app/models/error-action';
-import {PointProps} from '@app/models/geojson-props';
+import {JourneyType, PointProps} from '@app/models/geojson-props';
 import {StoreAction} from '@app/models/store-action';
 
 
@@ -31,7 +31,12 @@ export namespace CommonActions {
   export class UpdateMarker extends StoreAction {
     static readonly type = `[Common] Update marker`;
 
-    constructor(public payload: {featureId: string; coordinates?: GeoJSON.Position, props?: PointProps}) {
+    constructor(public payload: {
+      featureId: string;
+      coordinates?: GeoJSON.Position,
+      props?: PointProps,
+      markerType?: JourneyType,
+    }) {
       super();
     }
   }

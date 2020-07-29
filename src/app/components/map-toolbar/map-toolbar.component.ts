@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {JourneyType} from '@app/models/geojson-props';
+import {ADD_MARKER_TOOLS} from '@app/models/marker-types';
 import {MapService} from '@app/service/map.service';
 import {MarkerService} from '@app/service/marker.service';
 import {CommonActions} from '@app/store/common/common.actions';
@@ -12,13 +13,6 @@ import {filter, first} from 'rxjs/operators';
 import {MapStylesListComponent} from '../map-styles-list/map-styles-list.component';
 
 
-interface AddMarkerTool {
-  type: JourneyType;
-  color: string;
-  label: string;
-  icon: string;
-}
-
 @Component({
   selector: 'app-map-toolbar',
   templateUrl: './map-toolbar.component.html',
@@ -27,12 +21,7 @@ interface AddMarkerTool {
 })
 export class MapToolbarComponent implements OnInit, OnDestroy {
 
-  readonly ADD_MARKER_TOOLS: AddMarkerTool[] = [
-    {type: 'journey', color: '#81d4fa', label: 'Travel', icon: 'wallet-travel'},
-    {type: 'mountain', color: '#a5d6a7', label: 'Mountain', icon: 'image-filter-hdr'},
-    {type: 'bike', color: '#ffcc80', label: 'Bike', icon: 'bike'},
-    {type: 'ski', color: '#bdbdbd', label: 'Skiing', icon: 'ski'},
-  ];
+  readonly ADD_MARKER_TOOLS = ADD_MARKER_TOOLS;
 
   /**
    * Compass icon is rotated of 45deg

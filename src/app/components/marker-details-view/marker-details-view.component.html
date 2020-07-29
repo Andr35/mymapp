@@ -33,9 +33,11 @@
 
   <ion-toolbar>
     <div slot="start" class="app-flex ion-align-items-center">
-      <ion-img class="icon-type ion-margin-end"
-               [src]="('assets/bullets/bullet-' + geojsonFeature?.properties.type) + '.svg'"></ion-img>
 
+      <ion-img class="icon-type ion-margin-end" (dblclick)="onChangeMarkerType()"
+               appTooltip="Double click to change marker type"
+               [src]="('assets/bullets/bullet-' + geojsonFeature?.properties.type) + '.svg'">
+      </ion-img>
 
       <app-input-mode #titleInputMode>
         <h2 viewElem class="ion-no-margin" appTooltip="Double click to edit">{{ formValue.title || 'Unknown Marker'}}
