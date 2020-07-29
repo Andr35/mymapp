@@ -1,13 +1,14 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {Journey, PointProps} from '@app/models/geojson-props';
+import {PhotoInfo} from '@app/models/photo-info';
 import {MapService} from '@app/service/map.service';
+import {MarkerService} from '@app/service/marker.service';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {Select, Store} from '@ngxs/store';
 import {format, isSameDay, parse} from 'date-fns';
 import * as EXIF from 'exif-js';
 import {Observable, Subscription} from 'rxjs';
-import {v4 as uuidv4} from 'uuid';
 
 
 interface PhotoData {
@@ -45,6 +46,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
   constructor(
     private store: Store,
     private mapService: MapService,
+    private markerService: MarkerService,
     // private modalCtrl: ModalController,
   ) {}
 
@@ -71,17 +73,27 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
     if (photos.length > 0) {
 
-      const journeys = photos.reduce<Journey[]>((a, b) => {
+      const photoInfos: PhotoInfo[] = [];
+      for (const photo of photos) {
+        const photoInfo = await this.markerService.preparePhoto(photo.file);
+        photoInfos.push(photoInfo);
+      }
+
+      const journeys = photos.reduce<Journey[]>((a, b, i) => {
         let bucket = a.find(j => isSameDay(new Date(j.date), b.shotDate));
 
         if (bucket) {
-          // bucket.photos = [...(bucket.photos ?? []) , {
-          //   // TODO complete
-          // }];
+          bucket.photos = [...(bucket.photos ?? []), {
+            filename: photoInfos[i].filename,
+            base64Data: photoInfos[i].base64Data
+          }];
         } else {
           bucket = {
             date: format(b.shotDate, 'yyyy-MM-dd'),
-            photos: [] // TODO complete
+            photos: [{
+              filename: photoInfos[i].filename,
+              base64Data: photoInfos[i].base64Data
+            }]
           } as Journey;
           a.push(bucket);
         }
@@ -91,12 +103,7 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
       this.store.dispatch(new CommonActions.AddMarker({
         coordinates: [photos[0].long ?? 11, photos[0].lat ?? 46],
-        props: {
-          id: uuidv4(),
-          type: 'journey',
-          title: '',
-          journeys
-        }
+        props: this.markerService.preparePointProps('journey', journeys)
       }));
 
     }

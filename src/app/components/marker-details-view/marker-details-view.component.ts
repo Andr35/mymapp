@@ -1,8 +1,8 @@
-import {DOCUMENT} from '@angular/common';
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Journey, JourneyPhoto, PointProps} from '@app/models/geojson-props';
 import {MapService} from '@app/service/map.service';
+import {MarkerService} from '@app/service/marker.service';
 import {CommonActions} from '@app/store/common/common.actions';
 import {ModalController} from '@ionic/angular';
 import {Store} from '@ngxs/store';
@@ -16,13 +16,6 @@ interface MarkerFormValue {
 
 type MarkerFormValueGroup = {[key in (keyof MarkerFormValue)]: unknown};
 
-interface PhotoInfo {
-  filename: string;
-  base64Data: string;
-  width: number;
-  height: number;
-}
-
 @Component({
   selector: 'app-marker-details-view',
   templateUrl: './marker-details-view.component.html',
@@ -32,7 +25,6 @@ interface PhotoInfo {
 export class MarkerDetailsViewComponent {
 
   private readonly DATE_FMT = 'yyyy-MM-dd';
-  private readonly DEFAULT_IMAGE_HEIGHT = 768;
 
   @Input()
   isModal?: boolean;
@@ -68,7 +60,7 @@ export class MarkerDetailsViewComponent {
     private cd: ChangeDetectorRef,
     private store: Store,
     private modalCtrl: ModalController,
-    @Inject(DOCUMENT) private document: Document,
+    private markerService: MarkerService,
   ) {
 
     this.form = this.fb.group({
@@ -170,7 +162,7 @@ export class MarkerDetailsViewComponent {
       const file = files.item(i);
       if (file?.type.startsWith('image')) {
 
-        const photoInfo = await this.preparePhoto(file);
+        const photoInfo = await this.markerService.preparePhoto(file);
 
         this.addPhoto(journeyControl, {
           filename: file.name,
@@ -196,44 +188,6 @@ export class MarkerDetailsViewComponent {
     );
 
     this.cd.markForCheck();
-  }
-
-  private async preparePhoto(file: File): Promise<PhotoInfo> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-
-      reader.onload = event => {
-        const imgElem = new Image();
-
-        imgElem.onload = () => {
-          const canvas = this.document.createElement('canvas');
-          // tslint:disable-next-line:no-non-null-assertion
-          const ctx = canvas.getContext('2d')!;
-          // > smooth == < sharpen
-          // ctx.imageSmoothingEnabled = true;
-          // ctx.imageSmoothingQuality = 'high';
-
-          // Resize
-          canvas.height = this.DEFAULT_IMAGE_HEIGHT;
-          canvas.width = (this.DEFAULT_IMAGE_HEIGHT * imgElem.width) / imgElem.height;
-
-          ctx.drawImage(imgElem, 0, 0, imgElem.width, imgElem.height, 0, 0, canvas.width, canvas.height);
-
-          const base64Data = ctx.canvas.toDataURL('image/jpeg');
-          resolve({
-            base64Data,
-            width: canvas.width,
-            height: canvas.height,
-            filename: file.name,
-          });
-        };
-        imgElem.onerror = err => reject(err);
-        imgElem.src = event.target?.result as string ?? '';
-      };
-      reader.onerror = err => reject(err);
-
-      reader.readAsDataURL(file);
-    });
   }
 
 }

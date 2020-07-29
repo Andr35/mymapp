@@ -1,6 +1,7 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {JourneyType} from '@app/models/geojson-props';
 import {MapService} from '@app/service/map.service';
+import {MarkerService} from '@app/service/marker.service';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
 import {PopoverController} from '@ionic/angular';
@@ -8,7 +9,6 @@ import {Store} from '@ngxs/store';
 import {MapMouseEvent, MapTouchEvent} from 'mapbox-gl';
 import {Subscription} from 'rxjs';
 import {filter, first} from 'rxjs/operators';
-import {v4 as uuidv4} from 'uuid';
 import {MapStylesListComponent} from '../map-styles-list/map-styles-list.component';
 
 
@@ -61,12 +61,7 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
       // Add new marker
       this.store.dispatch(new CommonActions.AddMarker({
         coordinates: ev.lngLat.toArray(),
-        props: {
-          id: uuidv4(),
-          type: markerType,
-          title: '',
-          journeys: []
-        }
+        props: this.markerService.preparePointProps(markerType)
       }));
     }
 
@@ -83,6 +78,7 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
     private store: Store,
     private renderer: Renderer2,
     private cd: ChangeDetectorRef,
+    private markerService: MarkerService,
   ) {}
 
 
