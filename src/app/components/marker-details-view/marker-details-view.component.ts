@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Renderer2} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Journey, JourneyPhoto, PointProps} from '@app/models/geojson-props';
 import {MapService} from '@app/service/map.service';
@@ -7,6 +7,7 @@ import {CommonActions} from '@app/store/common/common.actions';
 import {ModalController} from '@ionic/angular';
 import {Store} from '@ngxs/store';
 import {format} from 'date-fns';
+import {MapMouseEvent, MapTouchEvent} from 'mapbox-gl';
 
 
 interface MarkerFormValue {
@@ -53,10 +54,26 @@ export class MarkerDetailsViewComponent {
     return this.form.get('title') as FormControl;
   }
 
+  isMarkerRepositionOn = false;
+
+  private readonly repositionMarkerCallback: (ev: MapMouseEvent | MapTouchEvent) => void = (ev) => {
+
+    // Disable tool
+    this.toggleRepositionMarker();
+
+    const newCoords = ev.lngLat.toArray();
+
+    this.store.dispatch(new CommonActions.UpdateMarker({
+      featureId: this.geojsonFeature?.properties.id ?? '',
+      coordinates: newCoords
+    }));
+
+  }
 
   constructor(
     private fb: FormBuilder,
     private mapService: MapService,
+    private renderer: Renderer2,
     private cd: ChangeDetectorRef,
     private store: Store,
     private modalCtrl: ModalController,
@@ -172,6 +189,19 @@ export class MarkerDetailsViewComponent {
       }
     }
 
+  }
+
+  toggleRepositionMarker() {
+
+    if (!this.isMarkerRepositionOn) {
+      this.mapService.map.on('click', this.repositionMarkerCallback);
+      this.renderer.addClass(this.mapService.map.getCanvasContainer(), 'app-map-clickable');
+    } else {
+      this.mapService.map.off('click', this.repositionMarkerCallback);
+      this.renderer.removeClass(this.mapService.map.getCanvasContainer(), 'app-map-clickable');
+    }
+
+    this.isMarkerRepositionOn = !this.isMarkerRepositionOn;
   }
 
   onClose() {

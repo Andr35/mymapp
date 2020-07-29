@@ -73,6 +73,13 @@
             {{ geojsonFeature?.geometry.coordinates[0] | number: '1.6-6' }}
           </small>
         </ion-note>
+        <ion-buttons>
+          <ion-button size="small" (click)="toggleRepositionMarker()"
+                      appTooltip="Change marker position. Click on the map on the point where reposition the marker"
+                      [color]="isMarkerRepositionOn ? 'secondary' : 'medium'">
+            <ion-icon slot="icon-only" size="small" [src]="'pencil' | getIcon"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-col>
 
       <ion-col size="auto">
