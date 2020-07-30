@@ -102,3 +102,67 @@ jobs:
         with:
           name: dist-linux
           path: electron/dist/*.deb
+
+  # Job: Package Windows ############################################################################
+  package-windows:
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: www
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: electron
+
+      - name: Package
+        run: npm run electron:build-windows
+        working-directory: electron
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-windows
+          path: electron/dist/*.exe
+
+  # Job: Package Mac ############################################################################
+  package-macos:
+    needs: build
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: www
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: "14"
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: electron
+
+      - name: Package
+        run: npm run electron:build-mac
+        working-directory: electron
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist-mac
+          path: electron/dist/*.dng
