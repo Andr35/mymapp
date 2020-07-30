@@ -30,7 +30,7 @@
     "electron"
   ],
   "build": {
-    "appId": "it.andr35.${name}",
+    "appId": "it.andr35.mapp",
     "productName": "Mapp",
     "files": [
       "assets/*",
