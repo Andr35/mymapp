@@ -37,7 +37,11 @@ export class MapSearchComponent implements OnInit, AfterViewInit {
 
   async onSearch(inputText: string) {
     if (inputText) {
-      const response = await this.geocodingClient.forwardGeocode({query: inputText}).send();
+
+      const response = await this.geocodingClient.forwardGeocode({
+        query: inputText,
+        proximity: this.mapService.map.getCenter().toArray(),
+      }).send();
 
       const match: GeocoderResult = response.body;
       this.results = match.features;

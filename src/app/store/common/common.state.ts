@@ -141,6 +141,24 @@ export class CommonState {
     }
   }
 
+  @Action(CommonActions.CloseFile)
+  async closeFile(ctx: StateContext<CommonStateModel>, {}: CommonActions.CloseFile) {
+
+    if (ctx.getState().file || ctx.getState().geojsonData) {
+
+      ctx.patchState({
+        file: null,
+        geojsonData: null,
+
+        currentGeojsonFeature: null,
+
+        error: null
+      });
+
+    }
+
+  }
+
 
   @Action(CommonActions.AddMarker)
   addMarker(ctx: StateContext<CommonStateModel>, {payload: {coordinates, props}}: CommonActions.AddMarker) {

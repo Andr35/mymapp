@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, Renderer2} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Journey, JourneyPhoto, PointProps} from '@app/models/geojson-props';
 import {ADD_MARKER_TOOLS} from '@app/models/marker-types';
@@ -24,7 +24,7 @@ type MarkerFormValueGroup = {[key in (keyof MarkerFormValue)]: unknown};
   styleUrls: ['./marker-details-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class MarkerDetailsViewComponent {
+export class MarkerDetailsViewComponent implements OnDestroy {
 
   private readonly DATE_FMT = 'yyyy-MM-dd';
 
@@ -237,6 +237,12 @@ export class MarkerDetailsViewComponent {
     );
 
     this.cd.markForCheck();
+  }
+
+  ngOnDestroy() {
+    if (this.isMarkerRepositionOn) {
+      this.toggleRepositionMarker();
+    }
   }
 
 }

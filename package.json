@@ -25,7 +25,7 @@
     "@angular/platform-browser": "^10.0.6",
     "@angular/platform-browser-dynamic": "^10.0.6",
     "@angular/router": "^10.0.6",
-    "@capacitor-community/electron": "^1.1.2",
+    "@capacitor-community/electron": "^1.2.3",
     "@capacitor/core": "^2.4.0",
     "@ionic/angular": "^5.3.1",
     "@mapbox/mapbox-sdk": "^0.11.0",

@@ -19,6 +19,10 @@ export namespace CommonActions {
     static readonly type = `[Common] Save file`;
   }
 
+  export class CloseFile extends StoreAction {
+    static readonly type = `[Common] Close file`;
+  }
+
 
   export class AddMarker extends StoreAction {
     static readonly type = `[Common] Add marker`;

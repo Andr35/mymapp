@@ -93,6 +93,10 @@ export class FileManagerComponent {
     );
   }
 
+  onCloseFile() {
+    this.store.dispatch(new CommonActions.CloseFile());
+  }
+
   private resetSavingFlag() {
     this.savingStatus = null;
     this.cd.markForCheck();

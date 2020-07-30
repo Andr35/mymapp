@@ -30,6 +30,13 @@
             <span>Save</span>
             <ion-icon slot="end" [src]="saveBtnIcon | getIcon"></ion-icon>
           </ion-button>
+
+          <!-- <ion-buttons> -->
+          <ion-button size="small" (dblclick)="onCloseFile()" [disabled]="loading$ | async" color="danger"
+                      appTooltip="Double click to close the file without saving">
+            <ion-icon slot="icon-only" [src]="'file-remove-outline' | getIcon"></ion-icon>
+          </ion-button>
+          <!-- </ion-buttons> -->
         </ion-col>
 
       </ion-row>

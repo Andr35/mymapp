@@ -115,9 +115,7 @@ export class MapService {
       // Listen for geojson
       this.subscr.add(
         this.geojsonData$.subscribe(geojson => {
-          if (geojson) {
-            this.updateMapSource(geojson);
-          }
+          this.updateMapSource(geojson ?? DEFAULT_GEOJSON_DATA);
         })
       );
 
