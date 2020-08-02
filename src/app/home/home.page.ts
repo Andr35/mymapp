@@ -85,14 +85,16 @@ export class HomePage implements AfterViewInit, OnDestroy {
         if (bucket) {
           bucket.photos = [...(bucket.photos ?? []), {
             filename: photoInfos[i].filename,
-            base64Data: photoInfos[i].base64Data
+            base64Data: photoInfos[i].base64Data,
+            filePath: (photos[i].file as any).path,
           }];
         } else {
           bucket = {
             date: format(b.shotDate, 'yyyy-MM-dd'),
             photos: [{
               filename: photoInfos[i].filename,
-              base64Data: photoInfos[i].base64Data
+              base64Data: photoInfos[i].base64Data,
+              filePath: (photos[i].file as any).path,
             }]
           } as Journey;
           a.push(bucket);

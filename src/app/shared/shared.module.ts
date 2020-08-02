@@ -7,6 +7,7 @@ import {SimpleTooltipComponent} from './components/simple-tooltip/simple-tooltip
 import {TooltipDirective} from './directives/tooltip/tooltip.directive';
 import {UploadFilesDirective} from './directives/upload-files/upload-files.directive';
 import {GetIconPipe} from './pipes/get-icon.pipe';
+import {PhotoPathPipe} from './pipes/photo-path.pipe';
 
 @NgModule({
   imports: [
@@ -18,15 +19,21 @@ import {GetIconPipe} from './pipes/get-icon.pipe';
     SimpleTooltipComponent,
 
     GetIconPipe,
+    PhotoPathPipe,
+
     UploadFilesDirective,
-    InputModeComponent,
     TooltipDirective,
+
+    InputModeComponent,
   ],
   exports: [
     GetIconPipe,
+    PhotoPathPipe,
+
     UploadFilesDirective,
-    InputModeComponent,
     TooltipDirective,
+
+    InputModeComponent,
   ]
 })
 export class SharedModule {}

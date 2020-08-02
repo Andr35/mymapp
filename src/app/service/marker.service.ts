@@ -9,7 +9,7 @@ import {v4 as uuidv4} from 'uuid';
 })
 export class MarkerService {
 
-  private readonly DEFAULT_IMAGE_HEIGHT = 768;
+  private readonly DEFAULT_IMAGE_HEIGHT = 480;
 
   constructor(
     @Inject(DOCUMENT) private document: Document,

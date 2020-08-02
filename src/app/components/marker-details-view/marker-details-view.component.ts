@@ -189,6 +189,7 @@ export class MarkerDetailsViewComponent implements OnDestroy {
         this.addPhoto(journeyControl, {
           filename: file.name,
           base64Data: photoInfo.base64Data,
+          filePath: (file as any).path
         });
 
       }

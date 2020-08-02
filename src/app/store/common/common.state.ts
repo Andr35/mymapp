@@ -7,9 +7,13 @@ import {Platform} from '@ionic/angular';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {MapStyle, MAP_DEFAULT_STYLES} from '@models/map-style';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
+import {getYear} from 'date-fns';
 import {saveAs} from 'file-saver';
 
 const {Filesystem} = Plugins;
+
+
+const PHOTOS_FOLDER_NAME = `catalog`;
 
 export interface CommonStateModel {
 
@@ -42,10 +46,20 @@ export class CommonState {
 
   constructor(private platform: Platform) {}
 
+  private static toFolderPath(file: File | null): string | null {
+
+    const arr = ((file as any)?.path as string)?.split('/');
+    return arr.slice(0, arr.length - 1).join('/') ?? null;
+  }
+
   // Selectors ////////////////////////////////////////////////////////////////////////////////////
 
   @Selector() static file(state: CommonStateModel) {
     return state.file;
+  }
+
+  @Selector() static fileFolderPath(state: CommonStateModel): string | null {
+    return this.toFolderPath(state.file);
   }
 
   @Selector() static geojsonData(state: CommonStateModel) {
@@ -161,7 +175,7 @@ export class CommonState {
 
 
   @Action(CommonActions.AddMarker)
-  addMarker(ctx: StateContext<CommonStateModel>, {payload: {coordinates, props}}: CommonActions.AddMarker) {
+  async addMarker(ctx: StateContext<CommonStateModel>, {payload: {coordinates, props}}: CommonActions.AddMarker) {
 
     // If geojson does not exist -> no file loaded -> use default
     const geojson = {...(ctx.getState().geojsonData ?? DEFAULT_GEOJSON_DATA)};
@@ -175,7 +189,7 @@ export class CommonState {
           type: 'Point',
           coordinates
         },
-        properties: props
+        properties: await this.syncPhotoFile(ctx, props)
       };
 
       geojson.features = [geojsonPoint, ...geojson.features];
@@ -189,10 +203,17 @@ export class CommonState {
   }
 
   @Action(CommonActions.UpdateMarker)
-  updateMarker(ctx: StateContext<CommonStateModel>, {payload: {featureId, coordinates, props, markerType}}: CommonActions.UpdateMarker) {
+  async updateMarker(
+    ctx: StateContext<CommonStateModel>,
+    {payload: {featureId, coordinates, props, markerType}}: CommonActions.UpdateMarker
+  ) {
 
     // If geojson does not exist -> no file loaded -> use default
     const geojson = {...(ctx.getState().geojsonData ?? DEFAULT_GEOJSON_DATA)};
+
+    if (props) {
+      props = await this.syncPhotoFile(ctx, props);
+    }
 
     if (geojson.type === 'FeatureCollection') {
 
@@ -289,6 +310,86 @@ export class CommonState {
 
       reader.readAsText(file);
     });
+  }
+
+
+  private async syncPhotoFile(ctx: StateContext<CommonStateModel>, props: PointProps): Promise<PointProps> {
+
+    if (!this.platform.is('electron')) {
+      return props;
+    }
+
+    const geojsonFolderPath = CommonState.toFolderPath(ctx.getState().file);
+    if (!geojsonFolderPath) {
+      return props;
+    }
+
+
+    if (props.journeys) {
+      for (const journey of props.journeys) {
+
+        if (journey.photos) {
+          for (let j = 0; j < journey.photos.length; j++) {
+            const photo = journey.photos[j];
+
+            if (photo.filePath && !photo.filePath.startsWith(PHOTOS_FOLDER_NAME)) {
+              // Photo needs to be copied
+
+              const folderRelativePath = this.calcPhotoFolderRelativePath(journey.date);
+              const photoRelativePath = `${folderRelativePath}/${photo.filename}`;
+              const absolutePath = `${geojsonFolderPath}/${photoRelativePath}`;
+
+              this.mkdirFolder(ctx, `${geojsonFolderPath}/${folderRelativePath}`);
+
+              //  Copy
+              await Filesystem.copy({
+                from: photo.filePath,
+                to: absolutePath,
+                directory: 'DRIVE_ROOT' as FilesystemDirectory,
+              });
+
+              // Update path
+              photo.filePath = photoRelativePath;
+
+              journey.photos[j] = photo;
+            }
+
+          }
+        }
+
+      }
+    }
+
+    return props;
+  }
+
+
+  private async mkdirFolder(ctx: StateContext<CommonStateModel>, folderPath: string): Promise<void> {
+
+    let folderExists = false;
+    try {
+      const stat = await Filesystem.stat({
+        path: folderPath,
+        directory: 'DRIVE_ROOT' as FilesystemDirectory,
+      });
+      folderExists = !!stat;
+    } catch (e) {
+      folderExists = false;
+    }
+
+    if (!folderExists) {
+      await Filesystem.mkdir({
+        path: folderPath,
+        directory: 'DRIVE_ROOT' as FilesystemDirectory,
+        recursive: true
+      });
+    }
+
+  }
+
+  private calcPhotoFolderRelativePath(date: string): string | null {
+    const year = getYear(new Date(date));
+    return `${PHOTOS_FOLDER_NAME}/${year}`;
   }
 
 }

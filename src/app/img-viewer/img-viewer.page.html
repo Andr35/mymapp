@@ -15,7 +15,7 @@
 
   <ion-slides [pager]="true">
     <ion-slide *ngFor="let photo of photos; let i = index">
-      <ion-img [src]="photo.base64Data"></ion-img>
+      <ion-img [src]="(photo | photoPath) || photo.base64Data"></ion-img>
     </ion-slide>
   </ion-slides>
 

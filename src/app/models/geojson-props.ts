@@ -21,6 +21,8 @@ export interface JourneyPhoto {
   filename: string;
   base64Data: string;
   description?: string;
+
+  filePath?: string;
 }
 
 // export interface GeometryCollectionProps {
