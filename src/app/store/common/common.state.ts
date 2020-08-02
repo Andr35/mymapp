@@ -135,7 +135,7 @@ export class CommonState {
         const geojsonBlob = new Blob([geojsonString], {type: 'application/json'});
 
         // Downlaod file
-        saveAs(geojsonBlob, file?.name ?? 'journeys.json');
+        saveAs(geojsonBlob, file?.name ?? 'my-mapp.json');
       }
 
     }
