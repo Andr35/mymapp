@@ -1,8 +1,14 @@
-.header {
-  position: absolute;
-  top: 0;
+.app-slides {
+  height: 100%;
 }
 
 .toolbar {
   --background: transparent;
+}
+
+.app-img {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: 100%;
 }

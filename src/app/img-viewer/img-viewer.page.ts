@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectionStrategy, Component, HostListener, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {Router} from '@angular/router';
 import {JourneyPhoto} from '@app/models/geojson-props';
 import {NAV_STATE_IMG_VIEWER_INDEX, NAV_STATE_IMG_VIEWER_PHOTOS} from '@app/models/nav-contants';
@@ -19,8 +19,12 @@ export class ImgViewerPage implements OnInit, AfterViewInit {
   photos?: JourneyPhoto[];
 
   initialIndex = 0;
+  currentIndex = 0;
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private cd: ChangeDetectorRef,
+  ) {}
 
   ngOnInit() {
     this.photos = this.router.getCurrentNavigation()?.extras.state?.[NAV_STATE_IMG_VIEWER_PHOTOS];
@@ -44,6 +48,11 @@ export class ImgViewerPage implements OnInit, AfterViewInit {
     if (!(await this.slides.isEnd())) {
       this.slides.slideNext();
     }
+  }
+
+  async updateCurrIndex() {
+    this.currentIndex = await this.slides.getActiveIndex();
+    this.cd.markForCheck();
   }
 
 }

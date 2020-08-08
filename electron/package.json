@@ -1,14 +1,14 @@
 {
-  "name": "mapp",
+  "name": "mymapp",
   "version": "1.0.0",
-  "description": "Mapp application",
+  "description": "MyMapp application",
   "main": "./build/index.js",
   "author": {
     "name": "Andr35",
     "email": "a@b.com"
   },
   "license": "MIT",
-  "homepage": "https://github.com/Andr35/mapp",
+  "homepage": "https://github.com/Andr35/mymapp",
   "scripts": {
     "build": "tsc",
     "electron:start": "npm run build && electron ./",
@@ -21,7 +21,7 @@
     "@capacitor-community/electron-core": "^1.2.3"
   },
   "devDependencies": {
-    "electron": "^9.1.2",
+    "electron": "^9.2.0",
     "electron-builder": "^22.8.0",
     "typescript": "~3.9.5"
   },
@@ -30,8 +30,8 @@
     "electron"
   ],
   "build": {
-    "appId": "it.andr35.mapp",
-    "productName": "Mapp",
+    "appId": "it.andr35.mymapp",
+    "productName": "MyMapp",
     "files": [
       "assets/*",
       "build/index.js",
@@ -53,8 +53,8 @@
       "target": [
         "deb"
       ],
-      "synopsis": "Mapp App",
-      "description": "Mapp Application",
+      "synopsis": "MyMapp App",
+      "description": "MyMapp Application",
       "category": "Utility",
       "icon": "assets/appIcon.png"
     }

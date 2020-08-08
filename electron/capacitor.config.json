@@ -1,6 +1,6 @@
 {
-  "appId": "it.andr35.mapp",
-  "appName": "mapp",
+  "appId": "it.andr35.mymapp",
+  "appName": "MyMapp",
   "bundledWebRuntime": false,
   "npmClient": "npm",
   "webDir": "www",
