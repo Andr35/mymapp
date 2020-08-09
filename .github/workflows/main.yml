@@ -208,7 +208,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./electron/dist/dist-linux/mymapp.deb
+          asset_path: ./dist-linux/mymapp.deb
           asset_name: mymapp.deb
           asset_content_type: application/x-debian-package
       - name: Upload Release Assets (Windows)
@@ -217,7 +217,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./electron/dist/dist-windows/mymapp.exe
+          asset_path: ./dist-windows/mymapp.exe
           asset_name: mymapp.exe
           asset_content_type: application/x-msdos-program
       - name: Upload Release Assets (MacOS)
@@ -226,6 +226,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
-          asset_path: ./electron/dist/dist-mac/mymapp.dmg
+          asset_path: ./dist-mac/mymapp.dmg
           asset_name: mymapp.dmg
           asset_content_type: application/x-apple-diskimage
