@@ -1,6 +1,6 @@
 {
   "name": "mymapp",
-  "version": "0.0.1",
+  "version": "0.1.2",
   "author": "Andr35",
   "description": "MyMapp application",
   "license": "MIT",
@@ -14,6 +14,8 @@
     "test": "ng test",
     "lint": "ng lint && stylelint './**/*.scss'",
     "e2e": "ng e2e",
+    "release:patch": "standard-version --release-as patch --bumpFiles package.json electron/package.json",
+    "release:minor": "standard-version --release-as minor --bumpFiles package.json electron/package.json",
     "check-deps": "npm-check -s -i typescript -i @types/node"
   },
   "private": true,

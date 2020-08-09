@@ -1,11 +1,11 @@
 {
   "name": "mymapp",
-  "version": "1.0.0",
+  "version": "0.1.2",
   "description": "MyMapp application",
   "main": "./build/index.js",
   "author": {
-    "name": "Andr35",
-    "email": "a@b.com"
+    "name": "andr35",
+    "email": "andrea.zorzi.za@gmail.com"
   },
   "license": "MIT",
   "homepage": "https://github.com/Andr35/mymapp",
@@ -32,6 +32,7 @@
   "build": {
     "appId": "it.andr35.mymapp",
     "productName": "MyMapp",
+    "artifactName": "mymapp.${ext}",
     "files": [
       "assets/*",
       "build/index.js",
