@@ -1,6 +1,6 @@
 {
   "name": "mymapp",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "MyMapp application",
   "main": "./build/index.js",
   "author": {
