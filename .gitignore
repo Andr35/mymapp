@@ -33,4 +33,4 @@ npm-debug.log*
 
 dist
 
-environments/environment.ts
+src/environments/environment.ts
