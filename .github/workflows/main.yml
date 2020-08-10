@@ -71,6 +71,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Setup Angular environment
+        run: sed -i 's/#TOKEN/'"${{ secrets.MAPBOX_TOKEN }}"'/g' environments/environment.prod.ts
+
       - name: Build
         run: npm run build:prod
 

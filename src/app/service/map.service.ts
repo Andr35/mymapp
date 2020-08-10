@@ -2,7 +2,9 @@ import {Injectable} from '@angular/core';
 import {PointProps} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
+import {Plugins} from '@capacitor/core';
 import {environment} from '@env/environment';
+import {AlertController} from '@ionic/angular';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {Select, Store} from '@ngxs/store';
 import {GeoJSONSource, GeolocateControl, Map} from 'mapbox-gl';
@@ -10,6 +12,7 @@ import RulerControl from 'mapbox-gl-controls/lib/ruler';
 import StylesControl from 'mapbox-gl-controls/lib/styles';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 
+const {Storage} = Plugins;
 
 @Injectable({
   providedIn: 'root'
@@ -20,6 +23,8 @@ export class MapService {
 
   private readonly GEOJSON_SOURCE = 'geojsonSource';
   private readonly GEOJSON_LAYER = 'geojsonSourceLayer';
+
+  private readonly KEY_MAPBOX_TOKEN = 'mapboxToken';
 
   private readonly MAP_MARKERS_DATA: {name: string; url: string}[] = [
     {name: 'marker-journey', url: `assets/markers/marker-journey.svg`},
@@ -66,7 +71,10 @@ export class MapService {
 
   }
 
-  constructor(private store: Store) {}
+  constructor(
+    private store: Store,
+    private alterCtrl: AlertController,
+  ) {}
 
 
   // Init /////////////////////////////////////////////////////////////////////////////////////////
@@ -75,24 +83,26 @@ export class MapService {
    * Initialize the map.
    * @param elem HTML element where draw the map.
    */
-  initMap(elem: HTMLElement): void {
+  async initMap(elem: HTMLElement): Promise<void> {
 
     // Reset
     this.subscr.unsubscribe();
     this.subscr = new Subscription();
 
-    this.initMapbox(elem);
+    await this.initMapbox(elem);
     this.initImages();
     this.initControls();
 
   }
 
 
-  private initMapbox(elem: HTMLElement): void {
+  private async initMapbox(elem: HTMLElement): Promise<void> {
+
+    const mapboxToken = await this.getMapboxToken();
 
     // Create the map
     this.map = new Map({
-      accessToken: environment.mapboxToken,
+      accessToken: mapboxToken,
       container: elem,
       style: this.store.selectSnapshot(CommonState.mapStyles)[0].styleUrl,
       center: [11, 46],
@@ -254,6 +264,53 @@ export class MapService {
       this.map.addSource(this.GEOJSON_SOURCE, {type: 'geojson', data: geojson});
     }
 
+  }
+
+
+  // Mapbox token /////////////////////////////////////////////////////////////////////////////////
+
+
+  private async getMapboxToken(): Promise<string> {
+
+    // Get from environment
+    if (environment.mapboxToken) {
+      return environment.mapboxToken;
+    }
+
+    // Get from local storage
+    const {value} = await Storage.get({key: this.KEY_MAPBOX_TOKEN});
+
+    if (value) {
+      return value;
+    }
+
+    // Ask to user
+    const alert = await this.alterCtrl.create({
+      header: 'Mapbox Token required',
+      message: `In order to work, the application requires a <strong>Mapbox token</strong>. Here is the documentation on how to get one: <a href="https://docs.mapbox.com/help/how-mapbox-works/access-tokens/" target="_blank">Access tokens</a>`,
+      backdropDismiss: false,
+      buttons: [
+        {text: 'Done'}
+      ],
+      inputs: [
+        {
+          name: 'token',
+          type: 'password',
+          placeholder: 'Copy here the Mapbox token'
+        }
+      ]
+
+    });
+    alert.present();
+    const alertDismiss = await alert.onDidDismiss();
+
+    await this.setMapboxToken(alertDismiss.data.values.token);
+
+    return alertDismiss.data.values.token;
+  }
+
+  private setMapboxToken(token: string): Promise<void> {
+    return Storage.set({key: this.KEY_MAPBOX_TOKEN, value: token});
   }
 
 

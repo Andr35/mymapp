@@ -42,6 +42,21 @@ npm run electron:build-windows # To create an exe installer
 
 ## Development
 
+First, you need to create an environment file in folder `envrionments` called
+`envrionment.ts`. Copy the content of `envrionments\environment.sample.ts` in
+the new file and replace the Mapbox token with a valid one. Here is described
+how to get one [Mapbox Access
+Tokens](https://docs.mapbox.com/help/how-mapbox-works/access-tokens/).
+
+```bash
+# e.g. Mapbox token is "abc123"
+
+# Copy configurations
+cp environments/environment.sample.ts environments/environment.ts
+# Setup the token
+sed -i 's/PASTE-HERE-A-MAPBOX-TOKEN/abc123/g' environments/environment.ts
+```
+
 Use the following command to serve locally the application and watch for file
 changes:
 
