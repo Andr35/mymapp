@@ -1,6 +1,6 @@
 {
   "name": "mymapp",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "author": "Andr35",
   "description": "A simple application to record travels, trips, and other activities with attached photos into a geojson file.",
   "license": "MIT",
