@@ -255,3 +255,15 @@ jobs:
           asset_path: ./dist-mac/mymapp.dmg
           asset_name: mymapp.dmg
           asset_content_type: application/x-apple-diskimage
+
+  # Create Release ################################################################################
+  remove-old-artifacts:
+    name: Remove old artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: "1 week"
