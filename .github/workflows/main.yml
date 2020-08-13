@@ -85,6 +85,27 @@ jobs:
           name: www
           path: www
 
+  # Job: Deploy WebApp ##############################################################################
+  deploy-webapp:
+    name: Deploy WebApp
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: www
+
+      - name: Deploy to Firebase
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
   # Job: Package Linux ############################################################################
   package-linux:
     name: Package Linux

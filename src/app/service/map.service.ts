@@ -287,7 +287,7 @@ export class MapService {
     // Ask to user
     const alert = await this.alterCtrl.create({
       header: 'Mapbox Token required',
-      message: `In order to work, the application requires a <strong>Mapbox token</strong>. Here is the documentation on how to get one: <a href="https://docs.mapbox.com/help/how-mapbox-works/access-tokens/" target="_blank">Access tokens</a>`,
+      message: `In order to work, the application requires a <strong>Mapbox token</strong>. Here is the documentation on how to get one: <a href="https://docs.mapbox.com/help/how-mapbox-works/access-tokens/" target="_blank" rel="noopener">Access tokens</a>`,
       backdropDismiss: false,
       buttons: [
         {text: 'Done'}

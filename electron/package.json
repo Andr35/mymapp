@@ -1,7 +1,7 @@
 {
   "name": "mymapp",
   "version": "0.1.7",
-  "description": "MyMapp application",
+  "description": "A simple application to record travels, trips, and other activities with attached photos into a geojson file.",
   "main": "./build/index.js",
   "author": {
     "name": "andr35",
@@ -55,7 +55,7 @@
         "deb"
       ],
       "synopsis": "MyMapp App",
-      "description": "MyMapp Application",
+      "description": "A simple application to record travels, trips, and other activities with attached photos into a geojson file.",
       "category": "Utility",
       "icon": "assets/appIcon.png"
     }

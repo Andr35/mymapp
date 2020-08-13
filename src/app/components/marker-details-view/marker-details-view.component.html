@@ -50,7 +50,7 @@
     </div>
 
     <ion-buttons slot="end" class="ion-margin-start">
-      <ion-button size="small" *ngIf="isModal" (click)="onClose()" appTooltip="Close">
+      <ion-button size="small" *ngIf="isModal" (click)="onClose()" appTooltip="Close" aria-label="Close">
         <ion-icon size="small" slot="icon-only" [src]="'close' | getIcon"></ion-icon>
       </ion-button>
     </ion-buttons>
@@ -65,7 +65,7 @@
     <ion-row>
       <ion-col class="app-flex ion-align-items-center">
         <ion-buttons>
-          <ion-button size="small" (click)="onCenterOnMap()" appTooltip="Center on map">
+          <ion-button size="small" (click)="onCenterOnMap()" appTooltip="Center on map" aria-label="Center on map">
             <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -78,7 +78,7 @@
         <ion-buttons>
           <ion-button size="small" (click)="toggleRepositionMarker()"
                       appTooltip="Change marker position. Click on the map on the point where reposition the marker"
-                      [color]="isMarkerRepositionOn ? 'secondary' : 'medium'">
+                      [color]="isMarkerRepositionOn ? 'secondary' : 'medium'" aria-label="Change marker position">
             <ion-icon slot="icon-only" size="small" [src]="'pencil' | getIcon"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -87,11 +87,13 @@
       <ion-col size="auto">
         <ion-buttons class="ion-margin-start">
 
-          <ion-button size="small" (click)="onSave()" [disabled]="form.invalid" color="secondary" appTooltip="Save">
+          <ion-button size="small" (click)="onSave()" [disabled]="form.invalid" color="secondary" appTooltip="Save"
+                      aria-label="Save">
             <ion-icon size="small" slot="icon-only" [src]="'content-save-outline' | getIcon"></ion-icon>
           </ion-button>
 
-          <ion-button size="small" (dblclick)="onDeleteMarker()" appTooltip="Double click to remove marker">
+          <ion-button size="small" (dblclick)="onDeleteMarker()" appTooltip="Double click to remove marker"
+                      aria-label="Remove marker">
             <ion-icon size="small" slot="icon-only" [src]="'delete' | getIcon" color="danger"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -134,7 +136,8 @@
                     <ion-col size="auto" class="app-flex">
                       <ion-buttons>
                         <ion-button *ngIf="formJourneysControl.controls.length > 1" size="small"
-                                    (click)="onRemoveJourney(i)" appTooltip="Remove this day">
+                                    (click)="onRemoveJourney(i)" appTooltip="Remove this day"
+                                    aria-label="Remove this day">
                           <ion-icon slot="icon-only" [src]="'map-marker-remove-outline' | getIcon" color="danger"
                                     size="small">
                           </ion-icon>
@@ -176,7 +179,7 @@
             <ion-row class="ion-margin-top">
               <ion-col>
                 <ion-buttons>
-                  <ion-button size="small" (click)="onAddJourney()">
+                  <ion-button size="small" (click)="onAddJourney()" aria-label="Add new day">
                     <span>Add new day</span>
                     <ion-icon size="small" slot="end" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
                   </ion-button>

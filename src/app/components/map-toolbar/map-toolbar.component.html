@@ -7,7 +7,8 @@
 
           <ion-buttons class="app-flex-column">
 
-            <ion-button size="small" (click)="mapService.toggleGeolocation()" appTooltip="Show current position">
+            <ion-button size="small" (click)="mapService.toggleGeolocation()" appTooltip="Show current position"
+                        aria-label="Show current position">
               <ion-icon slot="icon-only" size="small" [src]="'crosshairs-gps' | getIcon"></ion-icon>
             </ion-button>
 
@@ -15,22 +16,25 @@
             </div>
 
             <ion-button size="small" (click)="searchbarVisible = !searchbarVisible" appTooltip="Search on map"
-                        [color]="searchbarVisible ? 'secondary' : 'primary'">
+                        aria-label="Search on map" [color]="searchbarVisible ? 'secondary' : 'primary'">
               <ion-icon slot="icon-only" size="small" [src]="'map-search-outline' | getIcon"></ion-icon>
             </ion-button>
 
             <ion-button size="small" (click)="mapService.toggleRuler()" appTooltip="Measure distances"
+                        aria-label="Measure distances"
                         [color]="mapService.rulerCtrl?.isMeasuring ? 'secondary' : 'primary'">
               <ion-icon slot="icon-only" size="small" [src]="'ruler' | getIcon"></ion-icon>
             </ion-button>
 
-            <ion-button size="small" (click)="onResetBearing()" appTooltip="Reset map rotation" color="primary">
+            <ion-button size="small" (click)="onResetBearing()" appTooltip="Reset map rotation" color="primary"
+                        aria-label="Reset map rotation">
               <ion-icon slot="icon-only" size="small" [src]="'compass-outline' | getIcon"
                         [ngStyle]="{'rotate': (360 - bearing + BEARING_ICON_COMPENSATION) + 'deg'}">
               </ion-icon>
             </ion-button>
 
-            <ion-button size="small" (click)="toggleMapStylesPopover($event)" appTooltip="Change map style">
+            <ion-button size="small" (click)="toggleMapStylesPopover($event)" appTooltip="Change map style"
+                        aria-label="Change map style">
               <ion-icon slot="icon-only" size="small" [src]="'map-legend' | getIcon"></ion-icon>
             </ion-button>
 
@@ -41,7 +45,8 @@
                         (click)="toggleAddMarkerTool(addMarkerTool.type)"
                         [ngClass]="{'tool-selected': currentAddMarkerToolType === addMarkerTool.type}"
                         [appTooltip]="{icon: addMarkerTool.icon, text: 'Add a ' + addMarkerTool.label + ' marker'}"
-                        [style.color]="currentAddMarkerToolType !== addMarkerTool.type ? addMarkerTool.color : undefined">
+                        [style.color]="currentAddMarkerToolType !== addMarkerTool.type ? addMarkerTool.color : undefined"
+                        aria-label="Add marker">
               <ion-icon slot="icon-only" size="small" [src]="'map-marker-plus-outline' | getIcon"></ion-icon>
             </ion-button>
 
