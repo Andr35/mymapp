@@ -98,6 +98,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: www
+          path: www
 
       - name: Deploy to Firebase
         uses: w9jds/firebase-action@master
@@ -119,11 +120,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: www
+          path: www
 
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: "14"
+
+      - name: Capacitor sync
+        run: npx cap sync
 
       - name: Install dependencies
         run: npm ci
@@ -151,11 +156,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: www
+          path: www
 
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: "14"
+
+      - name: Capacitor sync
+        run: npx cap sync
 
       - name: Install dependencies
         run: npm ci
@@ -183,11 +192,15 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: www
+          path: www
 
       - name: Use Node.js
         uses: actions/setup-node@v1
         with:
           node-version: "14"
+
+      - name: Capacitor sync
+        run: npx cap sync
 
       - name: Install dependencies
         run: npm ci
@@ -266,4 +279,4 @@ jobs:
       - name: Remove old artifacts
         uses: c-hive/gha-remove-artifacts@v1
         with:
-          age: "1 week"
+          age: "3 days"
