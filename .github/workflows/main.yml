@@ -128,7 +128,7 @@ jobs:
           node-version: "14"
 
       - name: Capacitor sync
-        run: npx cap sync
+        run: npx @capacitor/cli sync
 
       - name: Install dependencies
         run: npm ci
@@ -164,7 +164,7 @@ jobs:
           node-version: "14"
 
       - name: Capacitor sync
-        run: npx cap sync
+        run: npx @capacitor/cli sync
 
       - name: Install dependencies
         run: npm ci
@@ -200,7 +200,7 @@ jobs:
           node-version: "14"
 
       - name: Capacitor sync
-        run: npx cap sync
+        run: npx @capacitor/cli sync
 
       - name: Install dependencies
         run: npm ci
