@@ -13,6 +13,8 @@ The project is based on the following technologies:
 - [Ionic](https://ionicframework.com/)
 - [Capacitor](https://capacitorjs.com/)
 
+Demo webapp: [https://mymapp-c603a.web.app](https://mymapp-c603a.web.app/)
+
 ## Build
 
 First, run:
