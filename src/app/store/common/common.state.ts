@@ -3,7 +3,7 @@ import {Injectable} from '@angular/core';
 import {PointProps} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {FilesystemDirectory, FilesystemEncoding, Plugins} from '@capacitor/core';
-import {Platform} from '@ionic/angular';
+import {Platform, ToastController} from '@ionic/angular';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {MapStyle, MAP_DEFAULT_STYLES} from '@models/map-style';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
@@ -44,12 +44,15 @@ export interface CommonStateModel {
 @Injectable()
 export class CommonState {
 
-  constructor(private platform: Platform) {}
+  constructor(
+    private platform: Platform,
+    private toastCtrl: ToastController,
+  ) {}
 
   private static toFolderPath(file: File | null): string | null {
 
-    const arr = ((file as any)?.path as string)?.split('/');
-    return arr.slice(0, arr.length - 1).join('/') ?? null;
+    const arr: string[] | undefined = ((file as any)?.path as string)?.split('/');
+    return arr?.slice(0, arr.length - 1).join('/') ?? null;
   }
 
   // Selectors ////////////////////////////////////////////////////////////////////////////////////
@@ -133,23 +136,41 @@ export class CommonState {
 
       const geojsonString = JSON.stringify(geojsonData);
 
-      if (isElectron && filePath) {
+      if (isElectron) {
 
-        await Filesystem.writeFile({
-          data: geojsonString,
-          path: filePath,
-          encoding: FilesystemEncoding.UTF8,
-          recursive: true,
-          directory: 'DRIVE_ROOT' as FilesystemDirectory,
-        });
+        if (filePath) { // File already esits
+
+          await Filesystem.writeFile({
+            data: geojsonString,
+            path: filePath,
+            encoding: FilesystemEncoding.UTF8,
+            recursive: true,
+            directory: 'DRIVE_ROOT' as FilesystemDirectory,
+          });
+
+        } else { // File never saved (does not exists) -> first time
+
+          // Save content in blob
+          const geojsonBlob = new Blob([geojsonString], {type: 'application/json'});
+          // Downlaod file
+          saveAs(geojsonBlob, file?.name ?? 'my-mapp.json');
+
+          const toast = await this.toastCtrl.create({
+            message: 'Please, after saving, open again the file you just saved...',
+            color: 'primary',
+            buttons: [{text: 'Ok'}]
+          });
+          toast.present();
+
+        }
 
       } else {
 
         // Save content in blob
         const geojsonBlob = new Blob([geojsonString], {type: 'application/json'});
-
         // Downlaod file
         saveAs(geojsonBlob, file?.name ?? 'my-mapp.json');
+
       }
 
     }
@@ -196,7 +217,7 @@ export class CommonState {
 
       ctx.patchState({
         geojsonData: geojson,
-        currentGeojsonFeature: geojson.features[geojson.features.length - 1] as GeoJSON.Feature<GeoJSON.Geometry, PointProps>
+        currentGeojsonFeature: geojson.features[0]
       });
     }
 
@@ -339,7 +360,7 @@ export class CommonState {
               const photoRelativePath = `${folderRelativePath}/${photo.filename}`;
               const absolutePath = `${geojsonFolderPath}/${photoRelativePath}`;
 
-              this.mkdirFolder(ctx, `${geojsonFolderPath}/${folderRelativePath}`);
+              await this.mkdirFolder(ctx, `${geojsonFolderPath}/${folderRelativePath}`);
 
               //  Copy
               await Filesystem.copy({

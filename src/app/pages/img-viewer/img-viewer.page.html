@@ -21,7 +21,9 @@
 
   <ion-slides class="app-slides" [pager]="true" (ionSlideDidChange)="updateCurrIndex()">
     <ion-slide *ngFor="let photo of photos; let i = index">
-      <ion-img class="app-img" [src]="(photo | photoPath) || photo.base64Data"></ion-img>
+      <ion-img #img class="app-img" [src]="photo | photoPath: photo.base64Data | async"
+               (ionError)="img.src = photo.base64Data">
+      </ion-img>
     </ion-slide>
   </ion-slides>
 

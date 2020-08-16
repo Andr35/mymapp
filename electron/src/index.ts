@@ -6,8 +6,9 @@ const myCapacitorApp = createCapacitorElectronApp({
   mainWindow: {
     windowOptions: {
       frame: false,
-      hasShadow: true,
-    }
+      hasShadow: true
+    },
+
   }
 });
 

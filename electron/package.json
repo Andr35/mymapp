@@ -57,7 +57,7 @@
       "synopsis": "MyMapp App",
       "description": "A simple application to record travels, trips, and other activities with attached photos into a geojson file.",
       "category": "Utility",
-      "icon": "assets/appIcon.png"
+      "icon": "assets/"
     }
   }
 }
