@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/Andr35/mymapp/compare/v0.2.3...v0.2.4) (2020-08-16)
+
+
+### Bug Fixes
+
+* 🐛 several different fixes ([305eaf8](https://github.com/Andr35/mymapp/commit/305eaf8c17971f261450d4c0b78b00707fa9498d))
+
 ### [0.2.3](https://github.com/Andr35/mymapp/compare/v0.2.2...v0.2.3) (2020-08-15)
 
 ### [0.2.2](https://github.com/Andr35/mymapp/compare/v0.2.1...v0.2.2) (2020-08-14)
