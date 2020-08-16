@@ -15,6 +15,8 @@ The project is based on the following technologies:
 
 Demo webapp: [https://mymapp-c603a.web.app](https://mymapp-c603a.web.app/)
 
+![App Preview](docs/assets/app.png)
+
 ## Build
 
 First, run:
