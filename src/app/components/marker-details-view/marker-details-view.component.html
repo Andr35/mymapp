@@ -156,6 +156,13 @@
                                    [routerLink]="['/img-viewer']"
                                    [state]="{'photos': journeyControl.get('photos')?.value, 'photoIndex': i}">
                           </ion-img>
+
+                          <ion-buttons class="img-rm-btn">
+                            <ion-button (click)="onRemovePhoto(journeyControl, i)" size="small" fill="clear"
+                                        color="danger" c3Tooltip="Remove">
+                              <ion-icon slot="icon-only" size="small" [src]="'close' | getIcon"></ion-icon>
+                            </ion-button>
+                          </ion-buttons>
                         </div>
 
                         <div class="img-box img-placeholder-box" appUploadFiles

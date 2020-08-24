@@ -17,6 +17,7 @@ $img-height: 128px;
 }
 
 .img-box {
+  position: relative;
   width: auto;
   height: $img-height;
   margin: 6px;
@@ -37,6 +38,12 @@ $img-height: 128px;
     }
   }
 
+  .img-rm-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  
 }
 
 .img-placeholder-box {

@@ -233,6 +233,10 @@ export class MarkerDetailsViewComponent implements OnDestroy {
     }
   }
 
+  onRemovePhoto(journeyControl: FormGroup, index: number) {
+    (journeyControl.get('photos') as FormArray).removeAt(index);
+  }
+
 
   private addPhoto(journeyControl: FormGroup, photoData: JourneyPhoto) {
 
