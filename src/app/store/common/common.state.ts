@@ -7,7 +7,7 @@ import {Platform, ToastController} from '@ionic/angular';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {MapStyle, MAP_DEFAULT_STYLES} from '@models/map-style';
 import {Action, Selector, State, StateContext} from '@ngxs/store';
-import {getYear} from 'date-fns';
+import {getYear, isBefore} from 'date-fns';
 import {saveAs} from 'file-saver';
 
 const {Filesystem} = Plugins;
@@ -233,6 +233,10 @@ export class CommonState {
     const geojson = {...(ctx.getState().geojsonData ?? DEFAULT_GEOJSON_DATA)};
 
     if (props) {
+
+      // Sort journeys by date
+      props.journeys = props.journeys?.sort((a, b) => isBefore(new Date(a.date), new Date(b.date)) ? 1 : -1);
+
       props = await this.syncPhotoFile(ctx, props);
     }
 
