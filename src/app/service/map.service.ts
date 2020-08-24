@@ -25,6 +25,7 @@ export class MapService {
   private readonly GEOJSON_LAYER = 'geojsonSourceLayer';
 
   private readonly KEY_MAPBOX_TOKEN = 'mapboxToken';
+  private readonly KEY_LAST_STYLE_USED = 'mapboxStyle';
 
   private readonly MAP_MARKERS_DATA: {name: string; url: string}[] = [
     {name: 'marker-journey', url: `assets/markers/marker-journey.svg`},
@@ -100,11 +101,14 @@ export class MapService {
 
     const mapboxToken = await this.getMapboxToken();
 
+    // Get last used style
+    const styleUrlData = await Storage.get({key: this.KEY_LAST_STYLE_USED});
+
     // Create the map
     this.map = new Map({
       accessToken: mapboxToken,
       container: elem,
-      style: this.store.selectSnapshot(CommonState.mapStyles)[0].styleUrl,
+      style: styleUrlData.value ?? this.store.selectSnapshot(CommonState.mapStyles)[0].styleUrl,
       center: [11, 46],
       zoom: 8,
     });
@@ -350,6 +354,8 @@ export class MapService {
     this.map.setStyle(styleUrl);
     // Once new style loaded -> re-add images, layers and sources (they are removed)
     this.map.on('styledata', this.styleDataCallback);
+    // Save last used style
+    Storage.set({key: this.KEY_LAST_STYLE_USED, value: styleUrl});
   }
 
 
