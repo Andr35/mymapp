@@ -127,8 +127,8 @@
                           <span>{{ journeyControl.value.date | date: 'dd MMMM yyyy' }}</span>
                         </div>
 
-                        <ion-input inputElem type="date" [formControl]="journeyControl.get('date')" required
-                                   (ionChange)="dateInputMode.setViewMode()"></ion-input>
+                        <ion-input inputElem type="date" [formControl]="journeyControl.get('date')" required>
+                        </ion-input>
 
                       </app-input-mode>
                     </ion-col>
