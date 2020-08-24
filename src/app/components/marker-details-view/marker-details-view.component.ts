@@ -225,6 +225,9 @@ export class MarkerDetailsViewComponent implements OnDestroy {
   }
 
   onClose() {
+    // Automatically closed if no selected geojson feature exists
+    this.store.dispatch(new CommonActions.SetCurrentGeojsonFeature({geojsonFeature: null}));
+
     if (this.isModal) {
       this.modalCtrl.dismiss();
     }

@@ -58,7 +58,7 @@
     </ion-col>
 
     <ion-col>
-      <app-map-search class="map-search" *ngIf="searchbarVisible"></app-map-search>
+      <app-map-search class="map-search" *ngIf="searchbarVisible" (closing)="searchbarVisible = false"></app-map-search>
     </ion-col>
 
   </ion-row>

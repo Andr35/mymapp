@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {MapService} from '@app/service/map.service';
 import {environment} from '@env/environment';
 import {IonSearchbar} from '@ionic/angular';
@@ -16,6 +16,9 @@ export class MapSearchComponent implements OnInit, AfterViewInit {
 
   @ViewChild(IonSearchbar)
   private readonly searchBar: IonSearchbar;
+
+  @Output()
+  closing = new EventEmitter<void>();
 
   private geocodingClient: any;
 
@@ -35,6 +38,15 @@ export class MapSearchComponent implements OnInit, AfterViewInit {
 
   }
 
+  ngAfterViewInit() {
+
+    setTimeout(() => { // Wait some time for initialization
+      this.searchBar.setFocus();
+    }, 200);
+
+  }
+
+
   async onSearch(inputText: string) {
     if (inputText) {
 
@@ -50,18 +62,12 @@ export class MapSearchComponent implements OnInit, AfterViewInit {
 
   }
 
-  ngAfterViewInit() {
-
-    setTimeout(() => { // Wait for initialization for some time
-      this.searchBar.setFocus();
-    }, 200);
-
+  onResultSelect(result: GeocoderResultFeature) {
+    this.mapService.centerMapOn(result.geometry, 15);
   }
 
-  onResultSelect(result: GeocoderResultFeature) {
-
-    this.mapService.centerMapOn(result.geometry, 15);
-
+  onClose() {
+    this.closing.next();
   }
 
 }
