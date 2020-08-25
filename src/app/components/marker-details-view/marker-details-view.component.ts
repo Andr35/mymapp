@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, Renderer2} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, Renderer2, TrackByFunction} from '@angular/core';
 import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Journey, JourneyPhoto, PointProps} from '@app/models/geojson-props';
 import {ADD_MARKER_TOOLS} from '@app/models/marker-types';
@@ -9,6 +9,8 @@ import {ModalController} from '@ionic/angular';
 import {Store} from '@ngxs/store';
 import {format} from 'date-fns';
 import {MapMouseEvent, MapTouchEvent} from 'mapbox-gl';
+import {Subscription} from 'rxjs';
+import {debounceTime} from 'rxjs/operators';
 
 
 interface MarkerFormValue {
@@ -61,6 +63,37 @@ export class MarkerDetailsViewComponent implements OnDestroy {
 
   isMarkerRepositionOn = false;
 
+  private saveStatus: 'pending' | 'success' = 'pending';
+  private saveStatusTimer?: any;
+
+  get saveStatusColor() {
+    switch (this.saveStatus) {
+      case 'pending':
+        return 'secondary';
+
+      case 'success':
+        return 'success';
+
+      default:
+        return 'secondary';
+    }
+  }
+
+  get saveStatusIcon() {
+    switch (this.saveStatus) {
+      case 'pending':
+        return 'content-save-outline';
+
+      case 'success':
+        return 'check';
+
+      default:
+        return 'content-save-outline';
+    }
+  }
+
+  private autoSaveSubscr?: Subscription;
+
   private readonly repositionMarkerCallback: (ev: MapMouseEvent | MapTouchEvent) => void = (ev) => {
 
     // Disable tool
@@ -74,6 +107,10 @@ export class MarkerDetailsViewComponent implements OnDestroy {
     }));
 
   }
+
+  readonly trackByJourneys: TrackByFunction<FormGroup> = (_i, item) => item.value.date;
+
+  readonly trackByPhotos: TrackByFunction<JourneyPhoto> = (_i, item) => item.filename;
 
   constructor(
     private fb: FormBuilder,
@@ -94,8 +131,8 @@ export class MarkerDetailsViewComponent implements OnDestroy {
     this.onAddJourney();
   }
 
-
   private updateFormValue() {
+    this.disableAutoSave();
 
     if (this.geojsonFeature) {
 
@@ -125,6 +162,8 @@ export class MarkerDetailsViewComponent implements OnDestroy {
       // Add at least a journey
       this.onAddJourney();
     }
+
+    this.enableAutoSave();
   }
 
 
@@ -138,7 +177,10 @@ export class MarkerDetailsViewComponent implements OnDestroy {
 
     this.formJourneysControl.push(
       this.fb.group({
-        date: this.fb.control(journey?.date ?? format(new Date(), this.DATE_FMT), [Validators.required]),
+        date: this.fb.control(journey?.date ?? format(new Date(), this.DATE_FMT), {
+          validators: [Validators.required],
+          updateOn: 'blur' // Provide the good UI/UX experience (don't change)
+        }),
         photos: this.fb.array(journey?.photos?.map(photo => this.fb.control(photo)) ?? [])
       })
     );
@@ -167,7 +209,16 @@ export class MarkerDetailsViewComponent implements OnDestroy {
     this.store.dispatch(new CommonActions.UpdateMarker({
       featureId: updatedFeatureProps.id,
       props: updatedFeatureProps
-    }));
+    })).subscribe(() => {
+      clearTimeout(this.saveStatusTimer);
+      this.saveStatus = 'success';
+      this.cd.markForCheck();
+
+      this.saveStatusTimer = setTimeout(() => {
+        this.saveStatus = 'pending';
+        this.cd.markForCheck();
+      }, 2000);
+    });
 
   }
 
@@ -247,7 +298,24 @@ export class MarkerDetailsViewComponent implements OnDestroy {
     this.cd.markForCheck();
   }
 
+  private disableAutoSave() {
+    this.autoSaveSubscr?.unsubscribe();
+  }
+
+  private enableAutoSave() {
+    this.autoSaveSubscr?.unsubscribe();
+
+    this.autoSaveSubscr = this.form.valueChanges.pipe(
+      debounceTime(750)
+    ).subscribe(() => {
+      this.onSave();
+    });
+
+  }
+
   ngOnDestroy() {
+    this.autoSaveSubscr?.unsubscribe();
+
     if (this.isMarkerRepositionOn) {
       this.toggleRepositionMarker();
     }

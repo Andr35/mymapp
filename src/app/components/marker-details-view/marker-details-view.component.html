@@ -87,9 +87,9 @@
       <ion-col size="auto">
         <ion-buttons class="ion-margin-start">
 
-          <ion-button size="small" (click)="onSave()" [disabled]="form.invalid" color="secondary" appTooltip="Save"
-                      aria-label="Save">
-            <ion-icon size="small" slot="icon-only" [src]="'content-save-outline' | getIcon"></ion-icon>
+          <ion-button size="small" (click)="onSave()" [disabled]="form.invalid" [color]="saveStatusColor"
+                      appTooltip="Save" aria-label="Save">
+            <ion-icon size="small" slot="icon-only" [src]="saveStatusIcon | getIcon"></ion-icon>
           </ion-button>
 
           <ion-button size="small" (dblclick)="onDeleteMarker()" appTooltip="Double click to remove marker"
@@ -114,7 +114,8 @@
               </ion-col>
             </ion-row>
 
-            <ion-row *ngFor="let journeyControl of formJourneysControl.controls; let i = index">
+            <ion-row
+                     *ngFor="let journeyControl of formJourneysControl.controls; let i = index; trackBy: trackByJourneys">
               <ion-col>
 
                 <ion-grid>
@@ -151,7 +152,8 @@
 
                       <div class="app-flex app-flex-wrap">
 
-                        <div class="img-box" *ngFor="let photo of journeyControl.get('photos')?.value; let i = index">
+                        <div class="img-box"
+                             *ngFor="let photo of journeyControl.get('photos')?.value; let i = index; trackBy: trackByPhotos">
                           <ion-img [src]="photo.base64Data" class="img" [alt]="photo.filename"
                                    [routerLink]="['/img-viewer']"
                                    [state]="{'photos': journeyControl.get('photos')?.value, 'photoIndex': i}">
