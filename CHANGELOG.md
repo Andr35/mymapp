@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.3.0](https://github.com/Andr35/mymapp/compare/v0.2.4...v0.3.0) (2020-08-26)
+
+
+### Features
+
+* **map-service:** ✨ save the last map style used and reapply it when map loads ([a66d4f7](https://github.com/Andr35/mymapp/commit/a66d4f7e12f166b1133df09232e6b24a8faee328))
+* **marker-details-view:** ✨ allow to remove a photo ([b058925](https://github.com/Andr35/mymapp/commit/b058925f22e81a14c95eb4d5c688b6505db54e14))
+* **marker-details-view:** ✨ implement autosave for marker details ([4256dee](https://github.com/Andr35/mymapp/commit/4256dee6b01bbeeedf59fd29991f122f54bcdd9c))
+* **store:** ✨ sort travels in same marker by most recent ([dc29713](https://github.com/Andr35/mymapp/commit/dc2971340a1c6f16e20008546e00fc389dfe1481))
+* ✨ add close buttons to "map search" and "marker details" cards ([fed087d](https://github.com/Andr35/mymapp/commit/fed087d392f6cfb497eee255244e3985ee2dfcad))
+
+
+### Bug Fixes
+
+* **marker-details-view:** 🐛 date input field does not show up for enough time ([d05fb1a](https://github.com/Andr35/mymapp/commit/d05fb1aed75f3f6629c52121696b3fdd965fba05))
+
 ### [0.2.4](https://github.com/Andr35/mymapp/compare/v0.2.3...v0.2.4) (2020-08-16)
 
 
