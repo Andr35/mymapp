@@ -1,5 +1,6 @@
 <ion-list>
-  <ion-item button detail="false" *ngFor="let style of (mapStyles$ | async)" (click)="onChangeMapStyle(style.styleUrl)">
+  <ion-item [button]="true" [detail]="false" *ngFor="let style of (mapStyles$ | async)"
+            (click)="onChangeMapStyle(style.styleUrl)">
     <ion-label>{{ style.label }}</ion-label>
   </ion-item>
 </ion-list>

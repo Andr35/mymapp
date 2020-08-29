@@ -13,7 +13,7 @@ export abstract class ErrorAction extends StoreAction {
   /**
    * Error data.
    */
-  payload: Error;
+  abstract payload: Error;
 
   /**
    * Map of error messages that can be utilized to display

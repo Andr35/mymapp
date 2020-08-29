@@ -9,7 +9,7 @@
     </ion-buttons>
 
     <div slot="end">
-      <ion-note *ngIf="photos?.length > 1">
+      <ion-note *ngIf="(photos?.length || 0) > 1">
         <span>{{ currentIndex + 1 }} / {{ photos?.length }}</span>
       </ion-note>
     </div>
@@ -21,7 +21,7 @@
 
   <ion-slides class="app-slides" [pager]="true" (ionSlideDidChange)="updateCurrIndex()">
     <ion-slide *ngFor="let photo of photos; let i = index">
-      <ion-img #img class="app-img" [src]="photo | photoPath: photo.base64Data | async"
+      <ion-img #img class="app-img" [src]="(photo | photoPath: photo.base64Data | async) || undefined"
                (ionError)="img.src = photo.base64Data">
       </ion-img>
     </ion-slide>

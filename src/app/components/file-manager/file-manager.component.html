@@ -11,7 +11,7 @@
         <ion-col *ngIf="!(geojsonData$ | async)" class="app-flex ion-align-items-center ion-justify-content-center">
 
           <input #fileInput type="file" class="file-input" accept="application/json"
-                 (change)="onOpenFile($event.srcElement.files)">
+                 (change)="onOpenFile($any($event.srcElement).files)">
 
           <ion-button size="small" (click)="onOpenFilePrompt()" aria-label="Open">
             <span>Open</span>
@@ -26,14 +26,14 @@
             <span *ngIf="!(file$ | async)">New File</span>
           </ion-text>
 
-          <ion-button size="small" (click)="onSave()" [disabled]="loading$ | async" [color]="saveBtnColor"
+          <ion-button size="small" (click)="onSave()" [disabled]="(loading$ | async) || false" [color]="saveBtnColor"
                       aria-label="Save">
             <span>Save</span>
             <ion-icon slot="end" [src]="saveBtnIcon | getIcon"></ion-icon>
           </ion-button>
 
           <!-- <ion-buttons> -->
-          <ion-button size="small" (dblclick)="onCloseFile()" [disabled]="loading$ | async" color="danger"
+          <ion-button size="small" (dblclick)="onCloseFile()" [disabled]="(loading$ | async) || false" color="danger"
                       appTooltip="Double click to close the file without saving" aria-label="Close">
             <ion-icon slot="icon-only" [src]="'file-remove-outline' | getIcon"></ion-icon>
           </ion-button>

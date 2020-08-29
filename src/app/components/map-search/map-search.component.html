@@ -2,7 +2,7 @@
   <ion-card-content>
 
     <ion-toolbar>
-      <ion-searchbar (ionChange)="onSearch($event.detail.value)" [debounce]="500" class="ion-no-padding">
+      <ion-searchbar (ionChange)="onSearch($any($event).detail.value)" [debounce]="500" class="ion-no-padding">
       </ion-searchbar>
 
       <ion-buttons slot="end" class="ion-margin-start">
@@ -13,7 +13,7 @@
     </ion-toolbar>
 
     <ion-list>
-      <ion-item button *ngFor="let result of results" detail="false" (click)="onResultSelect(result)">
+      <ion-item [button]="true" *ngFor="let result of results" [detail]="false" (click)="onResultSelect(result)">
         <ion-icon slot="start" [src]="'map-marker-outline' | getIcon" color="medium"></ion-icon>
 
         <div class="c3-app-flex-column">

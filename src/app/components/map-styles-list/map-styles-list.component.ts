@@ -12,7 +12,7 @@ import {Observable} from 'rxjs';
 export class MapStylesListComponent {
 
   @Input()
-  mapStyles$: Observable<MapStyle[]>;
+  mapStyles$?: Observable<MapStyle[]>;
 
   constructor(private popoverCtrl: PopoverController) {}
 

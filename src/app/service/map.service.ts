@@ -7,9 +7,8 @@ import {environment} from '@env/environment';
 import {AlertController} from '@ionic/angular';
 import {DEFAULT_GEOJSON_DATA} from '@models/default-geojson-data';
 import {Select, Store} from '@ngxs/store';
-import {GeoJSONSource, GeolocateControl, Map} from 'mapbox-gl';
+import {Control, GeoJSONSource, GeolocateControl, Map} from 'mapbox-gl';
 import RulerControl from 'mapbox-gl-controls/lib/ruler';
-import StylesControl from 'mapbox-gl-controls/lib/styles';
 import {BehaviorSubject, Observable, Subscription} from 'rxjs';
 
 const {Storage} = Plugins;
@@ -35,18 +34,18 @@ export class MapService {
   ];
 
   @Select(CommonState.geojsonData)
-  geojsonData$: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
+  geojsonData$!: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
 
   @Select(CommonState.currentGeojsonFeature)
-  currentGeojsonFeature$: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;
+  currentGeojsonFeature$!: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;
 
   // Mapbox ///////////////////////////////////////////////////////////////////////////////////////
 
-  public map: Map;
+  public map!: Map;
 
-  public geolocateCtrl: GeolocateControl;
-  public rulerCtrl: RulerControl;
-  public stylesCtrl: StylesControl;
+  public geolocateCtrl?: GeolocateControl;
+  public rulerCtrl?: any; // RulerControl;
+  public stylesCtrl?: unknown; // StylesControl;
 
   // Others ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -251,7 +250,7 @@ export class MapService {
 
     // Ruler
     this.rulerCtrl = new RulerControl();
-    this.map.addControl(this.rulerCtrl);
+    this.map.addControl(this.rulerCtrl as Control);
 
   }
 
@@ -337,7 +336,7 @@ export class MapService {
   }
 
   toggleGeolocation() {
-    this.geolocateCtrl.trigger();
+    this.geolocateCtrl?.trigger();
   }
 
   toggleRuler() {

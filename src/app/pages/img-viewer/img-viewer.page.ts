@@ -13,7 +13,7 @@ import {IonSlides} from '@ionic/angular';
 export class ImgViewerPage implements OnInit, AfterViewInit {
 
   @ViewChild(IonSlides)
-  private readonly slides: IonSlides;
+  private readonly slides?: IonSlides;
 
 
   photos?: JourneyPhoto[];
@@ -32,26 +32,26 @@ export class ImgViewerPage implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.slides.slideTo(this.initialIndex);
+    this.slides?.slideTo(this.initialIndex);
   }
 
 
   @HostListener('document:keydown.ArrowLeft')
   async slidePrev() {
-    if (!(await this.slides.isBeginning())) {
-      this.slides.slidePrev();
+    if (!(await this.slides?.isBeginning())) {
+      this.slides?.slidePrev();
     }
   }
 
   @HostListener('document:keydown.ArrowRight')
   async slideNext() {
-    if (!(await this.slides.isEnd())) {
-      this.slides.slideNext();
+    if (!(await this.slides?.isEnd())) {
+      this.slides?.slideNext();
     }
   }
 
   async updateCurrIndex() {
-    this.currentIndex = await this.slides.getActiveIndex();
+    this.currentIndex = await this.slides?.getActiveIndex() ?? 0;
     this.cd.markForCheck();
   }
 

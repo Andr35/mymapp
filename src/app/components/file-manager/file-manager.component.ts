@@ -15,13 +15,13 @@ import {finalize} from 'rxjs/operators';
 })
 export class FileManagerComponent {
 
-  @Select(hasActionsExecuting()) loading$: Observable<boolean>;
+  @Select(hasActionsExecuting()) loading$!: Observable<boolean>;
 
-  @Select(CommonState.file) file$: Observable<File | null>;
-  @Select(CommonState.geojsonData) geojsonData$: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
+  @Select(CommonState.file) file$!: Observable<File | null>;
+  @Select(CommonState.geojsonData) geojsonData$!: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
 
   @ViewChild('fileInput')
-  private readonly fileInputElem: ElementRef<HTMLInputElement>;
+  private readonly fileInputElem?: ElementRef<HTMLInputElement>;
 
   /**
    * Flag indicating the save operation status
@@ -58,7 +58,7 @@ export class FileManagerComponent {
 
 
   onOpenFilePrompt() {
-    this.fileInputElem.nativeElement.click();
+    this.fileInputElem?.nativeElement.click();
   }
 
   onOpenFile(files?: FileList) {

@@ -15,14 +15,14 @@ import {GeocoderResult, GeocoderResultFeature} from '@models/geocoder-result';
 export class MapSearchComponent implements OnInit, AfterViewInit {
 
   @ViewChild(IonSearchbar)
-  private readonly searchBar: IonSearchbar;
+  private readonly searchBar?: IonSearchbar;
 
   @Output()
   closing = new EventEmitter<void>();
 
   private geocodingClient: any;
 
-  results: GeocoderResultFeature[];
+  results: GeocoderResultFeature[] = [];
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -41,7 +41,7 @@ export class MapSearchComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
 
     setTimeout(() => { // Wait some time for initialization
-      this.searchBar.setFocus();
+      this.searchBar?.setFocus();
     }, 200);
 
   }

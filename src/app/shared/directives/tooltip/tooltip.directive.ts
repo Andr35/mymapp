@@ -28,7 +28,7 @@ export class TooltipDirective implements OnInit, OnDestroy {
 
   private readonly tooltipComp = SimpleTooltipComponent;
 
-  private overlayRef: OverlayRef;
+  private overlayRef?: OverlayRef;
 
   /**
    * Reference to the current created tooltip component.
@@ -65,20 +65,22 @@ export class TooltipDirective implements OnInit, OnDestroy {
     // Create tooltip portal
     const tooltipPortal = new ComponentPortal(this.tooltipComp);
 
-    if (this.overlayRef.hasAttached()) {
+    if (this.overlayRef?.hasAttached()) {
       this.overlayRef.detach();
     }
 
     // Attach tooltip portal to overlay
-    this.tooltipComponentRef = this.overlayRef.attach(tooltipPortal);
+    this.tooltipComponentRef = this.overlayRef?.attach(tooltipPortal);
 
     // Pass content to tooltip component instance
-    this.tooltipComponentRef.instance.data = this.data;
+    if (this.tooltipComponentRef) {
+      this.tooltipComponentRef.instance.data = this.data;
+    }
   }
 
   @HostListener('mouseleave')
   hide() {
-    this.overlayRef.detach();
+    this.overlayRef?.detach();
   }
 
   ngOnDestroy() {

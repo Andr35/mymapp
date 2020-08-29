@@ -29,15 +29,15 @@ export class HomePage implements AfterViewInit, OnDestroy {
   // Data /////////////////////////////////////////////////////////////////////////////////////////
 
   @Select(CommonState.geojsonData)
-  geojsonData$: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
+  geojsonData$!: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
 
   @Select(CommonState.currentGeojsonFeature)
-  currentGeojsonFeature$: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;
+  currentGeojsonFeature$!: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;
 
   // Template elems ///////////////////////////////////////////////////////////////////////////////
 
   @ViewChild('mapContainer')
-  private readonly mapContainer: ElementRef<HTMLDivElement>;
+  private readonly mapContainer?: ElementRef<HTMLDivElement>;
 
   // Others ///////////////////////////////////////////////////////////////////////////////////////
 
@@ -52,7 +52,9 @@ export class HomePage implements AfterViewInit, OnDestroy {
 
   ngAfterViewInit() {
 
-    this.mapService.initMap(this.mapContainer.nativeElement);
+    if (this.mapContainer?.nativeElement) {
+      this.mapService.initMap(this.mapContainer.nativeElement);
+    }
 
   }
 

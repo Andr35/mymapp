@@ -6,6 +6,7 @@ import {InputModeComponent} from './components/input-mode/input-mode.component';
 import {SimpleTooltipComponent} from './components/simple-tooltip/simple-tooltip.component';
 import {TooltipDirective} from './directives/tooltip/tooltip.directive';
 import {UploadFilesDirective} from './directives/upload-files/upload-files.directive';
+import {CoordinatesPipe} from './pipes/coordinates.pipe';
 import {GetIconPipe} from './pipes/get-icon.pipe';
 import {PhotoPathPipe} from './pipes/photo-path.pipe';
 
@@ -20,15 +21,18 @@ import {PhotoPathPipe} from './pipes/photo-path.pipe';
 
     GetIconPipe,
     PhotoPathPipe,
+    CoordinatesPipe,
 
     UploadFilesDirective,
     TooltipDirective,
 
     InputModeComponent,
+
   ],
   exports: [
     GetIconPipe,
     PhotoPathPipe,
+    CoordinatesPipe,
 
     UploadFilesDirective,
     TooltipDirective,

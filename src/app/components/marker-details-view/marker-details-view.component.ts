@@ -1,5 +1,5 @@
 import {ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, Renderer2, TrackByFunction} from '@angular/core';
-import {FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
+import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Journey, JourneyPhoto, PointProps} from '@app/models/geojson-props';
 import {ADD_MARKER_TOOLS} from '@app/models/marker-types';
 import {MapService} from '@app/service/map.service';
@@ -33,12 +33,12 @@ export class MarkerDetailsViewComponent implements OnDestroy {
   @Input()
   isModal?: boolean;
 
-  private _geojsonFeature: GeoJSON.Feature<GeoJSON.Point, PointProps> | null;
+  private _geojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null = null;
   @Input()
-  public get geojsonFeature(): GeoJSON.Feature<GeoJSON.Point, PointProps> | null {
+  public get geojsonFeature(): GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null {
     return this._geojsonFeature;
   }
-  public set geojsonFeature(value: GeoJSON.Feature<GeoJSON.Point, PointProps> | null) {
+  public set geojsonFeature(value: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null) {
     this._geojsonFeature = value;
 
     this.updateFormValue();
@@ -108,7 +108,7 @@ export class MarkerDetailsViewComponent implements OnDestroy {
 
   }
 
-  readonly trackByJourneys: TrackByFunction<FormGroup> = (_i, item) => item.value.date;
+  readonly trackByJourneys: TrackByFunction<AbstractControl> = (_i, item) => item.value.date;
 
   readonly trackByPhotos: TrackByFunction<JourneyPhoto> = (_i, item) => item.filename;
 
@@ -229,7 +229,7 @@ export class MarkerDetailsViewComponent implements OnDestroy {
     }
   }
 
-  async onOpenImg(files: FileList, journeyControl: FormGroup) {
+  async onOpenImg(files: FileList, journeyControl: AbstractControl) {
 
     for (let i = 0; i < files.length; i++) {
       const file = files.item(i);
@@ -284,12 +284,12 @@ export class MarkerDetailsViewComponent implements OnDestroy {
     }
   }
 
-  onRemovePhoto(journeyControl: FormGroup, index: number) {
+  onRemovePhoto(journeyControl: AbstractControl, index: number) {
     (journeyControl.get('photos') as FormArray).removeAt(index);
   }
 
 
-  private addPhoto(journeyControl: FormGroup, photoData: JourneyPhoto) {
+  private addPhoto(journeyControl: AbstractControl, photoData: JourneyPhoto) {
 
     (journeyControl.get('photos') as FormArray).push(
       this.fb.control(photoData)
