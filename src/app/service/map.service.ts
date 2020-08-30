@@ -25,6 +25,7 @@ export class MapService {
 
   private readonly KEY_MAPBOX_TOKEN = 'mapboxToken';
   private readonly KEY_LAST_STYLE_USED = 'mapboxStyle';
+  private readonly KEY_MARKER_OVERLAP = 'markerOverlap';
 
   private readonly MAP_MARKERS_DATA: {name: string; url: string}[] = [
     {name: 'marker-journey', url: `assets/markers/marker-journey.svg`},
@@ -56,6 +57,8 @@ export class MapService {
   private preventMapClick = false;
 
   readonly mapReady$ = new BehaviorSubject(false);
+  private readonly _allowMarkerOverlap$ = new BehaviorSubject(false);
+  readonly allowMarkerOverlap$ = this._allowMarkerOverlap$.asObservable();
 
   private subscr = new Subscription();
 
@@ -114,7 +117,7 @@ export class MapService {
 
 
     // Init map
-    this.map.on('load', () => {
+    this.map.on('load', async () => {
       this.map.resize();
 
       // Init source
@@ -150,6 +153,11 @@ export class MapService {
           }
         })
       );
+
+      // Setup config
+      const markerOverlapData = await Storage.get({key: this.KEY_MARKER_OVERLAP});
+      this.setMarkerOverlap(markerOverlapData.value === 'true');
+
 
       // Notify to interested components
       this.mapReady$.next(true);
@@ -190,7 +198,8 @@ export class MapService {
           'text-size': 12,
           'text-offset': [0, 0.6],
           'text-anchor': 'top',
-          'icon-allow-overlap': true
+          'icon-allow-overlap': false,
+          'text-allow-overlap': false,
         }
       });
 
@@ -355,6 +364,16 @@ export class MapService {
     this.map.on('styledata', this.styleDataCallback);
     // Save last used style
     Storage.set({key: this.KEY_LAST_STYLE_USED, value: styleUrl});
+  }
+
+  setMarkerOverlap(overlap: boolean) {
+    this.map.setLayoutProperty(this.GEOJSON_LAYER, 'icon-allow-overlap', overlap);
+    this.map.setLayoutProperty(this.GEOJSON_LAYER, 'text-allow-overlap', overlap);
+
+    // Save pref
+    Storage.set({key: this.KEY_MARKER_OVERLAP, value: overlap ? 'true' : 'false'});
+
+    this._allowMarkerOverlap$.next(overlap);
   }
 
 

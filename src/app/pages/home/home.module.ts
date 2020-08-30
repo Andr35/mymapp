@@ -6,11 +6,11 @@ import {MapSearchComponent} from '@app/components/map-search/map-search.componen
 import {MapStylesListComponent} from '@app/components/map-styles-list/map-styles-list.component';
 import {MapToolbarComponent} from '@app/components/map-toolbar/map-toolbar.component';
 import {MarkerDetailsViewComponent} from '@app/components/marker-details-view/marker-details-view.component';
+import {SettingsComponent} from '@app/components/settings/settings.component';
 import {SharedModule} from '@app/shared/shared.module';
 import {IonicModule} from '@ionic/angular';
 import {HomePage} from './home.page';
 import {HomePageRoutingModule} from './home.routing';
-
 
 
 @NgModule({
@@ -30,6 +30,7 @@ import {HomePageRoutingModule} from './home.routing';
     MarkerDetailsViewComponent,
     MapStylesListComponent,
     MapSearchComponent,
+    SettingsComponent,
   ]
 })
 export class HomePageModule {}

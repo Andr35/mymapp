@@ -1,0 +1,23 @@
+<ion-content>
+
+  <ion-item lines="none">
+    <ion-label>Allow marker overlap</ion-label>
+    <ion-toggle slot="end" [checked]="(allowMarkerOverlap$ | async) || false"
+                (ionChange)="onToggleMarkerOverlap($any($event).detail.checked)">
+    </ion-toggle>
+  </ion-item>
+
+  <!-- <ion-item lines="none">
+    <ion-label>Enable autosave</ion-label>
+    <ion-toggle slot="end"></ion-toggle>
+  </ion-item> -->
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-text class="ion-margin-start">
+      <ion-note>Version: {{ version || 'Unknown' }}</ion-note>
+    </ion-text>
+  </ion-toolbar>
+</ion-footer>

@@ -40,6 +40,14 @@
           <!-- </ion-buttons> -->
         </ion-col>
 
+        <ion-col size="auto">
+          <ion-buttons>
+            <ion-button size="small" (click)="toggleSettings($event)" appTooltip="Settings">
+              <ion-icon size="small" slot="icon-only" [src]="'cog' | getIcon"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-col>
+
       </ion-row>
     </ion-grid>
 

@@ -81,3 +81,9 @@
 .app-map-clickable {
   cursor: crosshair !important;
 }
+
+// Custom style ///////////////////////////////////////////////////////////////////////////////////
+
+.app-popover-settings {
+  --min-width: 350px;
+}

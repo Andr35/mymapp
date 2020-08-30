@@ -2,10 +2,12 @@ import {ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, ViewC
 import {PointProps} from '@app/models/geojson-props';
 import {CommonActions} from '@app/store/common/common.actions';
 import {CommonState} from '@app/store/common/common.state';
+import {PopoverController} from '@ionic/angular';
 import {hasActionsExecuting} from '@ngxs-labs/actions-executing';
 import {Select, Store} from '@ngxs/store';
 import {Observable} from 'rxjs';
 import {finalize} from 'rxjs/operators';
+import {SettingsComponent} from '../settings/settings.component';
 
 @Component({
   selector: 'app-file-manager',
@@ -54,7 +56,11 @@ export class FileManagerComponent {
     }
   }
 
-  constructor(private store: Store, private cd: ChangeDetectorRef) {}
+  constructor(
+    private store: Store,
+    private cd: ChangeDetectorRef,
+    private popoverCtrl: PopoverController,
+  ) {}
 
 
   onOpenFilePrompt() {
@@ -95,6 +101,19 @@ export class FileManagerComponent {
 
   onCloseFile() {
     this.store.dispatch(new CommonActions.CloseFile());
+  }
+
+  async toggleSettings(event: Event) {
+
+    const popover = await this.popoverCtrl.create({
+      component: SettingsComponent,
+      event,
+      cssClass: 'app-popover-settings',
+      translucent: false
+    });
+
+    await popover.present();
+
   }
 
   private resetSavingFlag() {
