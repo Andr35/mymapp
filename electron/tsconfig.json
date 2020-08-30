@@ -1,9 +1,17 @@
 {
   "compileOnSave": true,
-  "include": ["./src/*"],
+  "include": [
+    "./src/*"
+  ],
   "compilerOptions": {
     "outDir": "./build",
     "target": "ES5",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
   }
 }

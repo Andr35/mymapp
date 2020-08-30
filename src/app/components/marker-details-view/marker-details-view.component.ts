@@ -243,7 +243,30 @@ export class MarkerDetailsViewComponent implements OnDestroy {
           filePath: (file as any).path
         });
 
+        try {
+          const dateControl = journeyControl.get('date');
+          if (!dateControl || dateControl.value === format(new Date(), this.DATE_FMT)) { // Today
+            // Try to set date using photo shot time
+            const photoData = await this.markerService.extractPhotoData(file);
+            dateControl?.patchValue(format(photoData.shotDate, this.DATE_FMT));
+          }
+        } catch (e) {
+          // Does not matter
+        }
+
       }
+    }
+
+    try {
+      // Try to assign title if missing
+      if (!this.formTitleControl.value) {
+        const title = this.markerService.prepareTitle(files.item(0)?.name ?? '');
+        if (title) {
+          this.formTitleControl.patchValue(title);
+        }
+      }
+    } catch (e) {
+      // Does not matter
     }
 
   }
