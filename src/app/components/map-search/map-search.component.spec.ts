@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {IonicModule} from '@ionic/angular';
 import {MapSearchComponent} from './map-search.component';
 
@@ -7,7 +7,7 @@ describe('MapSearchComponent', () => {
   let component: MapSearchComponent;
   let fixture: ComponentFixture<MapSearchComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [MapSearchComponent],
       imports: [IonicModule.forRoot()]

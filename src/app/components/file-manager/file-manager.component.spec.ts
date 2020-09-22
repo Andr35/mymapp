@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {IonicModule} from '@ionic/angular';
 import {FileManagerComponent} from './file-manager.component';
 
@@ -7,7 +7,7 @@ describe('FileManagerComponent', () => {
   let component: FileManagerComponent;
   let fixture: ComponentFixture<FileManagerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [FileManagerComponent],
       imports: [IonicModule.forRoot()]

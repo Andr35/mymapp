@@ -12,7 +12,7 @@ describe('AppComponent', () => {
   let platformReadySpy;
   let platformSpy;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     // statusBarSpy = jasmine.createSpyObj('StatusBar', ['styleDefault']);
     // splashScreenSpy = jasmine.createSpyObj('SplashScreen', ['hide']);
     platformReadySpy = Promise.resolve();

@@ -1,4 +1,4 @@
-import {async, ComponentFixture, TestBed} from '@angular/core/testing';
+import {ComponentFixture, TestBed, waitForAsync} from '@angular/core/testing';
 import {IonicModule} from '@ionic/angular';
 import {InputModeComponent} from './input-mode.component';
 
@@ -7,7 +7,7 @@ describe('InputModeComponent', () => {
   let component: InputModeComponent;
   let fixture: ComponentFixture<InputModeComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [InputModeComponent],
       imports: [IonicModule.forRoot()]
