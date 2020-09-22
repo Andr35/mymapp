@@ -36,6 +36,7 @@ export class MapToolbarComponent implements OnInit, OnDestroy {
   currentAddMarkerToolType: JourneyType | null = null;
 
   searchbarVisible = false;
+  filterbarVisible = false;
 
   private readonly subscr = new Subscription();
 

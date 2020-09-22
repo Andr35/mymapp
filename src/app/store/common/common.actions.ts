@@ -61,6 +61,15 @@ export namespace CommonActions {
     }
   }
 
+  export class SetFilter extends StoreAction {
+    static readonly type = `[Common] Set filter`;
+
+    constructor(public payload: {years: number[]}) {
+      super();
+    }
+  }
+
+
 
   export class AppError extends ErrorAction {
     static readonly type = `[Common] Error`;

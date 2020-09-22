@@ -34,8 +34,8 @@ export class MapService {
     {name: 'marker-ski', url: `assets/markers/marker-ski.svg`},
   ];
 
-  @Select(CommonState.geojsonData)
-  geojsonData$!: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
+  @Select(CommonState.filteredGeojsonData)
+  filteredGeojsonData$!: Observable<GeoJSON.FeatureCollection<GeoJSON.Geometry, PointProps> | null>;
 
   @Select(CommonState.currentGeojsonFeature)
   currentGeojsonFeature$!: Observable<GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null>;
@@ -130,7 +130,7 @@ export class MapService {
 
       // Listen for geojson
       this.subscr.add(
-        this.geojsonData$.subscribe(geojson => {
+        this.filteredGeojsonData$.subscribe(geojson => {
           this.updateMapSource(geojson ?? DEFAULT_GEOJSON_DATA);
         })
       );

@@ -24,6 +24,8 @@ export interface CommonStateModel {
 
   currentGeojsonFeature: GeoJSON.Feature<GeoJSON.Geometry, PointProps> | null;
 
+  filterYears: number[];
+
   error: Error | null;
 }
 
@@ -37,6 +39,8 @@ export interface CommonStateModel {
     mapStyles: MAP_DEFAULT_STYLES,
 
     currentGeojsonFeature: null,
+
+    filterYears: [],
 
     error: null
   }
@@ -69,11 +73,54 @@ export class CommonState {
     return state.geojsonData;
   }
 
+  @Selector() static filteredGeojsonData(state: CommonStateModel) {
+    const features = state.geojsonData?.type === 'FeatureCollection' ?
+      ((state.geojsonData.features ?? []) as GeoJSON.Feature<GeoJSON.Geometry, PointProps>[]) :
+      [];
+
+    if (!state.geojsonData) {
+      return state.geojsonData;
+    }
+
+    if (state.filterYears.length === 0) { // Filter disabled
+      return state.geojsonData;
+    }
+
+    // Keep only features with a year contained in filter list
+    const filteredFeatures = features.filter(feature => feature.properties.journeys?.find(
+      // Check if exists a journey with a year in filter list
+      journey => state.filterYears.includes(getYear(new Date(journey.date)))
+    ));
+
+    return {...state.geojsonData, features: filteredFeatures};
+  }
+
   @Selector() static geojsonDataFeatures(state: CommonStateModel): GeoJSON.Feature<GeoJSON.Geometry, PointProps>[] {
     return state.geojsonData?.type === 'FeatureCollection' ?
       ((state.geojsonData.features ?? []) as GeoJSON.Feature<GeoJSON.Geometry, PointProps>[]) :
       [];
   }
+
+
+  @Selector() static geojsonDataFeaturesYears(state: CommonStateModel): number[] {
+    const features = state.geojsonData?.type === 'FeatureCollection' ?
+      ((state.geojsonData.features ?? []) as GeoJSON.Feature<GeoJSON.Geometry, PointProps>[]) :
+      [];
+
+    return Object.keys(
+      features.reduce<{[year: number]: boolean}>((a, b) => {
+        const newYears = b.properties.journeys?.reduce<{[year: number]: boolean}>((c, d) => {
+          c[getYear(new Date(d.date))] = true;
+          return c;
+        }, {}) ?? {};
+        return {...a, ...newYears};
+      }, {})
+    )
+      .map(year => parseInt(year, 10))
+      .sort((a, b) => a > b ? -1 : 1);
+
+  }
+
 
   @Selector() static mapStyles(state: CommonStateModel) {
     return state.mapStyles;
@@ -81,6 +128,10 @@ export class CommonState {
 
   @Selector() static currentGeojsonFeature(state: CommonStateModel) {
     return state.currentGeojsonFeature;
+  }
+
+  @Selector() static filterYears(state: CommonStateModel) {
+    return state.filterYears;
   }
 
   @Selector() static error(state: CommonStateModel) {
@@ -308,6 +359,15 @@ export class CommonState {
 
     ctx.patchState({
       currentGeojsonFeature: geojsonFeature
+    });
+
+  }
+
+  @Action(CommonActions.SetFilter)
+  setFilter(ctx: StateContext<CommonStateModel>, {payload: {years}}: CommonActions.SetFilter) {
+
+    ctx.patchState({
+      filterYears: years
     });
 
   }

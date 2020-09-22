@@ -38,6 +38,11 @@
               <ion-icon slot="icon-only" size="small" [src]="'map-legend' | getIcon"></ion-icon>
             </ion-button>
 
+            <ion-button size="small" (click)="filterbarVisible = !filterbarVisible" appTooltip="Filter markers by year"
+                        aria-label="Filter markers by year">
+              <ion-icon slot="icon-only" size="small" [src]="'filter-outline' | getIcon"></ion-icon>
+            </ion-button>
+
             <div class="divider">
             </div>
 
@@ -59,6 +64,10 @@
 
     <ion-col>
       <app-map-search class="map-search" *ngIf="searchbarVisible" (closing)="searchbarVisible = false"></app-map-search>
+    </ion-col>
+
+    <ion-col>
+      <app-map-filter class="map-filter" *ngIf="filterbarVisible" (closing)="filterbarVisible = false"></app-map-filter>
     </ion-col>
 
   </ion-row>

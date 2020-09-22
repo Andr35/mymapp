@@ -21,9 +21,9 @@
     "@capacitor-community/electron-core": "^1.2.3"
   },
   "devDependencies": {
-    "electron": "^9.2.0",
-    "electron-builder": "^22.8.0",
-    "typescript": "^4.0.2"
+    "electron": "^9.2.1",
+    "electron-builder": "^22.8.1",
+    "typescript": "^4.0.3"
   },
   "keywords": [
     "capacitor",
