@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.1](https://github.com/Andr35/mymapp/compare/v0.3.0...v0.3.1) (2020-09-22)
+
+
+### Features
+
+* **filter:** ✨ allow to filter markers by year ([132d5c9](https://github.com/Andr35/mymapp/commit/132d5c903912143622fd4a95a89eeb6671ba08f3))
+* **marker-details-view:** ✨ use photo file info to set date and title ([a9457f6](https://github.com/Andr35/mymapp/commit/a9457f686efb33962e7c7100d9a16f16871cc705))
+* **settings:** ✨ allow to choose marker overlap ([ba3ee74](https://github.com/Andr35/mymapp/commit/ba3ee74299c8874a5736f3c2f0734cd1868f3495))
+
 ## [0.3.0](https://github.com/Andr35/mymapp/compare/v0.2.4...v0.3.0) (2020-08-26)
 
 
