@@ -271,7 +271,7 @@ jobs:
           asset_name: mymapp.dmg
           asset_content_type: application/x-apple-diskimage
 
-  # Create Release ################################################################################
+  # Remove Old Artifacts ##########################################################################
   remove-old-artifacts:
     name: Remove old artifacts
     runs-on: ubuntu-latest
