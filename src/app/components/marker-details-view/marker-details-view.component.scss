@@ -19,6 +19,7 @@ $img-height: 128px;
 .img-box {
   position: relative;
   width: auto;
+  min-width: $img-height;
   height: $img-height;
   margin: 6px;
 

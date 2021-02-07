@@ -4,6 +4,9 @@
   "author": "Andr35",
   "description": "A simple application to record travels, trips, and other activities with attached photos into a geojson file.",
   "license": "MIT",
+  "repository": {
+    "url": "https://github.com/Andr35/mymapp"
+  },
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -16,6 +19,7 @@
     "e2e": "ng e2e",
     "release:patch": "standard-version --release-as patch --bumpFiles package.json electron/package.json",
     "release:minor": "standard-version --release-as minor --bumpFiles package.json electron/package.json",
+    "tauri": "tauri",
     "check-deps": "npm-check -s -i typescript -i @types/node"
   },
   "private": true,
@@ -42,6 +46,7 @@
     "mapbox-gl": "^1.13.0",
     "mapbox-gl-controls": "^1.6.5",
     "rxjs": "^6.6.3",
+    "tauri": "^0.14.1",
     "tslib": "^2.0.3",
     "uuid": "^8.3.1",
     "zone.js": "^0.11.3"

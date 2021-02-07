@@ -1,0 +1,12 @@
+{
+  "bumpFiles": [
+    {
+      "filename": "src-tauri/Cargo.toml",
+      "updater": "tools/cargo-toml-updater.js"
+    },
+    {
+      "filename": "package.json",
+      "type": "json"
+    }
+  ]
+}
