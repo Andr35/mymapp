@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.3](https://github.com/Andr35/mymapp/compare/v0.3.2...v0.3.3) (2021-03-07)
+
+
+### Bug Fixes
+
+* **electron:** 🐛 update @capacitor-community/electron platform ([428aff8](https://github.com/Andr35/mymapp/commit/428aff88fb8ef6667c8e01a226f343611c7b522d))
+
 ### [0.3.2](https://github.com/Andr35/mymapp/compare/v0.3.1...v0.3.2) (2021-03-07)
 
 
