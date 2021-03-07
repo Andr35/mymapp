@@ -23,6 +23,9 @@
 		"editorconfig.editorconfig",
 		"robinbentley.sass-indented",
 		"shinnn.stylelint",
+		"k--kato.intellij-idea-keybindings",
+		"davidanson.vscode-markdownlint",
+		"stylelint.vscode-stylelint"
 	],
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	"forwardPorts": [

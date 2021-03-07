@@ -250,6 +250,11 @@ export class MarkerDetailsViewComponent implements OnDestroy {
             const photoData = await this.markerService.extractPhotoData(file);
             dateControl?.patchValue(format(photoData.shotDate, this.DATE_FMT));
           }
+          if (!this.formTitleControl.value) {
+            const title = this.markerService.prepareTitle(file.name);
+            this.formTitleControl.patchValue(title);
+          }
+
         } catch (e) {
           // Does not matter
         }

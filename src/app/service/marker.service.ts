@@ -16,7 +16,7 @@ export class MarkerService {
 
   constructor(
     @Inject(DOCUMENT) private document: Document,
-  ) {}
+  ) { }
 
   preparePointProps(markerType: JourneyType, journeys: Journey[] = [], title = ''): PointProps {
     return {
@@ -88,8 +88,8 @@ export class MarkerService {
             resolve({
               file,
               shotDate: parse(shotDate, 'yyyy:MM:dd HH:mm:ss', new Date()),
-              lat: this.convLatLong(gpsLat, gpsLatRef),
-              long: this.convLatLong(gpsLong, gpsLongRef),
+              lat: gpsLat ? this.convLatLong(gpsLat, gpsLatRef) : null,
+              long: gpsLong ? this.convLatLong(gpsLong, gpsLongRef) : null,
             });
 
           });
