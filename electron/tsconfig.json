@@ -5,13 +5,12 @@
   ],
   "compilerOptions": {
     "outDir": "./build",
-    "target": "ES5",
+    "importHelpers": true,
+    "target": "ES2017",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "strictNullChecks": true,
+    "allowJs": true,
+    "strict": true
   }
 }
