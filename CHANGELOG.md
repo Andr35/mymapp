@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/Andr35/mymapp/compare/v0.3.1...v0.3.2) (2021-03-07)
+
+
+### Bug Fixes
+
+* 🐛 handle undefined gps coords in image exif data ([c5ea328](https://github.com/Andr35/mymapp/commit/c5ea328f247ae7c5f22836463590c2fda4780074))
+
 ### [0.3.1](https://github.com/Andr35/mymapp/compare/v0.3.0...v0.3.1) (2020-09-22)
 
 
